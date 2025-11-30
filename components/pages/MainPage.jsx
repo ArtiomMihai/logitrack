@@ -5,16 +5,12 @@ import Menu from "../menu/Menu";
 import OrderDetails from "../orders/OrderDetails";
 import {useState} from "react";
 
-
-
 export default function MainPage({navigation}) {
     const [isOpen, setIsOpen] = useState(false);
 
     function toggleMenu() {
         setIsOpen(!isOpen);
     }
-
-
 
     return (
         <View style={styles.container}>
@@ -24,6 +20,14 @@ export default function MainPage({navigation}) {
                 <Button
                     title="Перейти на регистрацию"
                     onPress={() => navigation.navigate('Registration')}
+                />
+                <Button
+                    title="Перейти на Логин"
+                    onPress={() => navigation.navigate('Login')}
+                />
+                <Button
+                    title="Перейти на Логин"
+                    onPress={() => navigation.navigate('Order')}
                 />
             </View>
             <View>
