@@ -1,6 +1,6 @@
-import {TextInput, Button} from "react-native-paper";
-import {useState} from "react";
-import {StyleSheet, View, Text} from "react-native";
+import { TextInput, Button } from "react-native-paper";
+import { useState } from "react";
+import { StyleSheet, View, Text } from "react-native";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function RegisterPage() {
@@ -13,7 +13,7 @@ export default function RegisterPage() {
     });
 
     const handleChange = (field, value) => {
-        setForm(prev => ({...prev, [field]: value}));
+        setForm(prev => ({ ...prev, [field]: value }));
     };
 
     const handleSubmit = () => {
@@ -23,11 +23,11 @@ export default function RegisterPage() {
     return (
         <View style={styles.container}>
             <View style={styles.title}>
-                <FontAwesome5 name="car" size={48} color="black"/>
+                <FontAwesome5 name="car" size={48} color="black" />
                 <Text style={styles.fontSize}>LogiTrack</Text>
             </View>
 
-            {["fullName", "email", "phone", "password", "confirmPassword"].map((field, index) => (
+            {["fullName","email","phone","password","confirmPassword"].map((field, index) => (
                 <TextInput
                     key={index}
                     style={styles.textInput}
@@ -46,7 +46,7 @@ export default function RegisterPage() {
                     onChangeText={text => handleChange(field, text)}
                 />
             ))}
-            <Text>Уже есть аккаунт? Войти</Text>
+               <Text>Уже есть аккаунт? Войти</Text>
             <Button mode="contained" onPress={handleSubmit} style={styles.button}>
                 Зарегистрироваться
             </Button>
@@ -73,16 +73,15 @@ const styles = StyleSheet.create({
         width: "85%",
         backgroundColor: "white",
     },
-    fontSize: {
-        fontSize: 32,
+    fontSize:{
+        fontSize:32,
         color: "#000000",
     },
     button: {
         marginTop: 2,
         width: "85%",
-        backgroundColor: "",
+        backgroundColor:"#0c7eda",
         borderRadius: 10
     },
-
 });
 
