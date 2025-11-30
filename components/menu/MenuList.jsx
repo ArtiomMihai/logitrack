@@ -5,19 +5,26 @@ import AntDesign from '@expo/vector-icons/AntDesign';
 import {useNavigation} from "@react-navigation/native";
 import Feather from '@expo/vector-icons/Feather';
 
+
 export default function MenuList() {
     const navigation = useNavigation()
     return (
         <View style={styles.container}>
+
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Order')}>
+
                 <View style={styles.menuItem}>
+
                     <SimpleLineIcons name="notebook" size={28} color="#333" style={styles.icon}/>
                     <Text style={styles.text}>Список заявок</Text>
+
                 </View>
+                
             </TouchableOpacity>
 
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Shops")}>
                 <View style={styles.menuItem}>
+
                     <AntDesign name="shop" size={28} color="#333" style={styles.icon}/>
                     <Text style={styles.text}>Магазины</Text>
                 </View>
