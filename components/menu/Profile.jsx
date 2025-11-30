@@ -4,38 +4,43 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 
 export default function Profile({ toggleMenu }) {
     return (
-        <View style={styles.mainBlock}>
-            <View style={styles.profileBlock}>
-                <FontAwesome name="user-o" size={36} color="black" />
-                <Text style={styles.name}>Никита Яцко</Text>
+        <>
+            <View style={styles.mainBlock}>
+                <View style={styles.profileBlock}>
+                    <FontAwesome name="user-o" size={36} color="#1A1A40" />
+                    <Text style={styles.name}>Никита Яцко</Text>
+                </View>
+                <TouchableOpacity onPress={toggleMenu}>
+                    <Ionicons name="close-outline" size={36} color="#1A1A40" />
+                </TouchableOpacity>
             </View>
-            <TouchableOpacity onPress={toggleMenu}>
-                <Ionicons name="close-outline" size={36} color="black" style={styles.icon} />
-            </TouchableOpacity>
-
-        </View>
+            <View style={styles.divider} /></>
     );
 }
 
 const styles = StyleSheet.create({
     mainBlock: {
-        height: 85,
-        borderBottomWidth: 2,
-        borderBottomColor: "#000",
+        height: 80,
+        borderRadius: 12,
+
+        paddingHorizontal: 10,
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: 'center',
-        paddingHorizontal: 10,
     },
     profileBlock: {
         flexDirection: "row",
         alignItems: "center",
     },
     name: {
-        fontSize: 21,
-        marginLeft: 15,
+        fontSize: 20,
+        marginLeft: 12,
+        fontWeight: "600",
+
+    },divider: {
+        height: 1,
+        backgroundColor: "#E0E0E0",
+        marginHorizontal: 15,
+        marginTop: 10,
     },
-    icon: {
-        marginRight: 10,
-    }
 });
