@@ -7,7 +7,7 @@ export default function Profile({ toggleMenu }) {
         <>
             <View style={styles.mainBlock}>
                 <View style={styles.profileBlock}>
-                    <FontAwesome name="user-o" size={36} color="#1A1A40" />
+                    <FontAwesome name="user-o" size={30} color="#1A1A40" />
                     <Text style={styles.name}>Никита Яцко</Text>
                 </View>
                 <TouchableOpacity onPress={toggleMenu}>
@@ -30,7 +30,6 @@ const styles = StyleSheet.create({
     },
     profileBlock: {
         flexDirection: "row",
-        alignItems: "center",
     },
     name: {
         fontSize: 20,
@@ -41,6 +40,6 @@ const styles = StyleSheet.create({
         height: 1,
         backgroundColor: "#E0E0E0",
         marginHorizontal: 15,
-        marginTop: 10,
+
     },
 });
