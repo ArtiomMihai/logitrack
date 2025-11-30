@@ -5,7 +5,7 @@ import MenuList from "./MenuList";
 
 export default function Menu({ isOpen, toggleMenu }) {
     const screenWidth = Dimensions.get("window").width;
-    const menuWidth = screenWidth * 0.8; // 80%
+    const menuWidth = screenWidth * 0.8;
 
     const leftAnim = useRef(new Animated.Value(-menuWidth)).current;
 
@@ -33,22 +33,14 @@ const styles = StyleSheet.create({
         top: 0,
         bottom: 0,
         backgroundColor: "#ffffff",
-
         shadowColor: "#000",
         shadowOpacity: 0.15,
         shadowOffset: { width: 0, height: 3 },
         shadowRadius: 8,
         elevation: 6,
-
         borderRightWidth: 1,
         borderRightColor: "rgba(0,0,0,0.1)",
-
-        paddingTop: 40,
         paddingHorizontal: 16,
-
-        borderTopRightRadius: 20,
-        borderBottomRightRadius: 20,
-
         zIndex: 1000,
     },
 });

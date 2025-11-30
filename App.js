@@ -1,12 +1,13 @@
+import React from 'react';
 
-import MainPage from "./components/pages/MainPage";
+
+import StackNavigator from "./navigation/StackNavigator";
+
 
 export function App() {
     return (
         <>
-            <MainPage></MainPage>
+            <StackNavigator></StackNavigator>
         </>
-
     );
 }
-

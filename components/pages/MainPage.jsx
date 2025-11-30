@@ -1,20 +1,31 @@
 import Header from "../Header";
-import {StyleSheet, Text, View} from "react-native";
+import {Button, StyleSheet, Text, View} from "react-native";
 import Order from "../orders/Order";
 import Menu from "../menu/Menu";
 import OrderDetails from "../orders/OrderDetails";
 import {useState} from "react";
 
-export default function MainPage() {
+
+
+export default function MainPage({navigation}) {
     const [isOpen, setIsOpen] = useState(false);
 
     function toggleMenu() {
         setIsOpen(!isOpen);
     }
 
+
+
     return (
         <View style={styles.container}>
+
             <Header toggleMenu={toggleMenu}/>
+            <View>
+                <Button
+                    title="Перейти на регистрацию"
+                    onPress={() => navigation.navigate('Registration')}
+                />
+            </View>
             <View>
                 <Text style={styles.lastOrders}> Последние заявки:</Text>
                 <View style={styles.orderList}>
@@ -23,6 +34,7 @@ export default function MainPage() {
                 </View>
             </View>
             <Menu isOpen={isOpen} toggleMenu={toggleMenu}/>
+
             <OrderDetails></OrderDetails>
         </View>
     )

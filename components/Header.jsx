@@ -16,7 +16,7 @@ export default function Header({ toggleMenu }) {
 const styles = StyleSheet.create({
     container: {
         paddingHorizontal: 20,
-        paddingTop: 25,
+
         height: 80,
         width: "100%",
         backgroundColor: "#b94a48",

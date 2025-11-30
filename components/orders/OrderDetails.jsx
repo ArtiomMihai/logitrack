@@ -32,8 +32,8 @@ export default function OrderDetails() {
 }
 
 const styles = StyleSheet.create({
-    nameCol: {flex: 3, justifyContent: "flex-start"},          // Название слева
-    qtyCol: {flex: 1, justifyContent: "flex-end"},             // Кол-во numeric справа
-    priceCol: {flex: 2, justifyContent: "flex-end"},           // Общая стоимость numeric справа
-    typeCol: {flex: 1, justifyContent: "flex-end"},            // Тип товара справа
+    nameCol: {flex: 3, justifyContent: "flex-start"},
+    qtyCol: {flex: 1, justifyContent: "flex-end"},
+    priceCol: {flex: 2, justifyContent: "flex-end"},
+    typeCol: {flex: 1, justifyContent: "flex-end"},
 });
