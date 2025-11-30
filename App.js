@@ -1,20 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { View, Text } from "react-native";
+import Header from "./components/Header";
+import Menu from "./components/Menu";
+import { useState } from "react";
 
 export default function App() {
+  const [isOpen, setIsOpen] = useState(false);
+
+  function toggleMenu() {
+    setIsOpen(!isOpen);
+  }
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <>
+      <View>
+        <Header toggleMenu={toggleMenu} />
+        <View >
+          <Text>Main content</Text>
+        </View>
+      </View>
+      <Menu isOpen={isOpen} toggleMenu={toggleMenu} />
+    </>
+
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
