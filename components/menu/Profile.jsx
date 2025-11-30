@@ -1,8 +1,10 @@
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import {useNavigation} from "@react-navigation/native";
 
 export default function Profile({toggleMenu}) {
+    const navigation = useNavigation();
     return (
         <>
             <View style={styles.mainBlock}>
@@ -10,6 +12,7 @@ export default function Profile({toggleMenu}) {
                     <FontAwesome name="user-o" size={30} color="#1A1A40"/>
                     <Text style={styles.name}>Никита Яцко</Text>
                 </View>
+
                 <TouchableOpacity onPress={toggleMenu}>
                     <Ionicons name="close-outline" size={36} color="#1A1A40"/>
                 </TouchableOpacity>

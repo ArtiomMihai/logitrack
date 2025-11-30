@@ -1,6 +1,5 @@
 import Header from "../Header";
 import {Button, StyleSheet, Text, View} from "react-native";
-import Order from "../orders/Order";
 import Menu from "../menu/Menu";
 import OrderDetails from "../orders/OrderDetails";
 import {useState} from "react";
@@ -14,7 +13,6 @@ export default function MainPage({navigation}) {
 
     return (
         <View style={styles.container}>
-
             <Header toggleMenu={toggleMenu}/>
             <View>
                 <Button
@@ -25,21 +23,9 @@ export default function MainPage({navigation}) {
                     title="Перейти на Логин"
                     onPress={() => navigation.navigate('Login')}
                 />
-                <Button
-                    title="Перейти на Логин"
-                    onPress={() => navigation.navigate('Order')}
-                />
-            </View>
-            <View>
-                <Text style={styles.lastOrders}> Последние заявки:</Text>
-                <View style={styles.orderList}>
-                    <Order/>
-                    <Order/>
-                </View>
             </View>
             <Menu isOpen={isOpen} toggleMenu={toggleMenu}/>
 
-            <OrderDetails></OrderDetails>
         </View>
     )
 }

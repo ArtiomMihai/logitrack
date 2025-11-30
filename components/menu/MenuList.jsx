@@ -3,7 +3,7 @@ import {StyleSheet} from "react-native";
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {useNavigation} from "@react-navigation/native";
-
+import Feather from '@expo/vector-icons/Feather';
 
 export default function MenuList() {
     const navigation = useNavigation()
@@ -21,6 +21,12 @@ export default function MenuList() {
                     <AntDesign name="shop" size={28} color="#333" style={styles.icon}/>
                     <Text style={styles.text}>Магазины</Text>
                 </View>
+            </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Me")}>
+
+                    <Feather style={styles.icon} name="settings" size={24} color="black" />
+                    <Text style={styles.text}>Профиль</Text>
+
             </TouchableOpacity>
         </View>
     );
