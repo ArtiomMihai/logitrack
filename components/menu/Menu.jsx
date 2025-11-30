@@ -1,40 +1,54 @@
-import {StyleSheet, Animated, TouchableOpacity} from "react-native";
+import {StyleSheet, Animated, Dimensions} from "react-native";
 import Profile from "./Profile";
 import { useRef, useEffect } from "react";
 import MenuList from "./MenuList";
 
-export default function Menu({ isOpen,toggleMenu }) {
-  const leftAnim = useRef(new Animated.Value(-260)).current;
-  useEffect(() => {
-    Animated.timing(leftAnim, {
-      toValue: isOpen ? 0 : -260, 
-      duration: 300, 
-      useNativeDriver: false, 
-    }).start();
-  }, [isOpen]);
+export default function Menu({ isOpen, toggleMenu }) {
+    const screenWidth = Dimensions.get("window").width;
+    const menuWidth = screenWidth * 0.8; // 80%
 
-  return (
-    <>
-        <Animated.View style={[styles.main, { left: leftAnim }]}>
-            <Profile toggleMenu={toggleMenu} />
-            <MenuList/>
+    const leftAnim = useRef(new Animated.Value(-menuWidth)).current;
 
-        </Animated.View>
+    useEffect(() => {
+        Animated.timing(leftAnim, {
+            toValue: isOpen ? 0 : -menuWidth,
+            duration: 300,
+            useNativeDriver: false,
+        }).start();
+    }, [isOpen, menuWidth]);
 
-    </>
-  );
+    return (
+        <>
+            <Animated.View style={[styles.main, { width: menuWidth, left: leftAnim }]}>
+                <Profile toggleMenu={toggleMenu} />
+                <MenuList />
+            </Animated.View>
+        </>
+    );
 }
 
 const styles = StyleSheet.create({
-  main: {
-    position: "absolute",
-    top: 0,
-    bottom: 0,
-    width: 260,
-    backgroundColor: "#fff",
-    borderColor: "#000",
-    borderWidth: 2,
-    zIndex: 1000,
-    paddingTop: 34,
-  },
+    main: {
+        position: "absolute",
+        top: 0,
+        bottom: 0,
+        backgroundColor: "#ffffff",
+
+        shadowColor: "#000",
+        shadowOpacity: 0.15,
+        shadowOffset: { width: 0, height: 3 },
+        shadowRadius: 8,
+        elevation: 6,
+
+        borderRightWidth: 1,
+        borderRightColor: "rgba(0,0,0,0.1)",
+
+        paddingTop: 40,
+        paddingHorizontal: 16,
+
+        borderTopRightRadius: 20,
+        borderBottomRightRadius: 20,
+
+        zIndex: 1000,
+    },
 });
