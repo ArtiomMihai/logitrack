@@ -1,9 +1,10 @@
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { TextInput, Button } from "react-native-paper";
 import { useState } from "react";
-import { StyleSheet, View, Text } from "react-native";
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import {ENDPOINTS} from "../../api";
 
-export default function RegisterPage() {
+export default function RegisterPage({ navigation }) {
     const [form, setForm] = useState({
         fullName: "",
         email: "",
@@ -13,47 +14,42 @@ export default function RegisterPage() {
     });
 
     const [errors, setErrors] = useState({});
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (field, value) => {
         setForm(prev => ({ ...prev, [field]: value }));
-        setErrors(prev => ({ ...prev, [field]: "" })); // очищаем ошибку
+        setErrors(prev => ({ ...prev, [field]: "" }));
     };
 
     const validate = () => {
         let valid = true;
         let newErrors = {};
 
-        // FULL NAME
         if (form.fullName.trim().length < 3) {
             newErrors.fullName = "Введите корректное имя";
             valid = false;
         }
 
-        // EMAIL
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(form.email)) {
             newErrors.email = "Введите корректный E-mail";
             valid = false;
         }
 
-        // PHONE
         const phoneRegex = /^[0-9]{8,15}$/;
         if (!phoneRegex.test(form.phone)) {
             newErrors.phone = "Введите корректный номер (только цифры)";
             valid = false;
         }
 
-        // PASSWORD (1 большая буква, 1 цифра, 1 спец)
         const passwordRegex =
             /^(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]).+$/;
-
         if (!passwordRegex.test(form.password)) {
             newErrors.password =
                 "Пароль должен содержать 1 заглавную букву, 1 цифру и 1 спецсимвол";
             valid = false;
         }
 
-        // CONFIRM PASSWORD
         if (form.password !== form.confirmPassword) {
             newErrors.confirmPassword = "Пароли не совпадают";
             valid = false;
@@ -63,9 +59,40 @@ export default function RegisterPage() {
         return valid;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!validate()) return;
-        console.log("Регистрация:", form);
+
+        setLoading(true);
+        try {
+            const response = await fetch(
+                ENDPOINTS.REGISTER,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        fullName: form.fullName,
+                        email: form.email,
+                        phoneNumber: form.phone,
+                        password: form.password,
+                        confirmPassword: form.confirmPassword,
+                    }),
+                }
+            );
+
+            const data = await response.json();
+            if (!response.ok) {
+                console.log("Ошибка регистрации:", data);
+
+            } else {
+                console.log("Успешная регистрация:", data);
+
+                if (navigation) navigation.navigate("Login");
+            }
+        } catch (error) {
+            console.error("Ошибка сети:", error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -75,7 +102,6 @@ export default function RegisterPage() {
                 <Text style={styles.fontSize}>LogiTrack</Text>
             </View>
 
-            {/* FULLNAME */}
             <TextInput
                 style={styles.textInput}
                 label="Введите ваше полное имя"
@@ -87,7 +113,6 @@ export default function RegisterPage() {
             />
             {errors.fullName && <Text style={styles.error}>{errors.fullName}</Text>}
 
-            {/* EMAIL */}
             <TextInput
                 style={styles.textInput}
                 label="Введите ваш E-mail"
@@ -99,7 +124,6 @@ export default function RegisterPage() {
             />
             {errors.email && <Text style={styles.error}>{errors.email}</Text>}
 
-            {/* PHONE */}
             <TextInput
                 style={styles.textInput}
                 label="Введите номер телефона"
@@ -112,7 +136,6 @@ export default function RegisterPage() {
             />
             {errors.phone && <Text style={styles.error}>{errors.phone}</Text>}
 
-            {/* PASSWORD */}
             <TextInput
                 style={styles.textInput}
                 label="Пароль"
@@ -125,7 +148,6 @@ export default function RegisterPage() {
             />
             {errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
-            {/* CONFIRM PASSWORD */}
             <TextInput
                 style={styles.textInput}
                 label="Подтвердите пароль"
@@ -136,13 +158,18 @@ export default function RegisterPage() {
                 activeOutlineColor="black"
                 onChangeText={t => handleChange("confirmPassword", t)}
             />
-            {errors.confirmPassword &&
-                <Text style={styles.error}>{errors.confirmPassword}</Text>
-            }
+            {errors.confirmPassword && <Text style={styles.error}>{errors.confirmPassword}</Text>}
 
-            <Text>Уже есть аккаунт? Войти</Text>
+            <TouchableOpacity onPress={() => navigation?.navigate("Login")}>
+                <Text style={{ marginTop: 10, color: "#0c7eda" }}>Уже есть аккаунт? Войти</Text>
+            </TouchableOpacity>
 
-            <Button mode="contained" onPress={handleSubmit} style={styles.button}>
+            <Button
+                mode="contained"
+                onPress={handleSubmit}
+                style={styles.button}
+                loading={loading}
+            >
                 Зарегистрироваться
             </Button>
         </View>
@@ -150,30 +177,30 @@ export default function RegisterPage() {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        padding: 20,
+        backgroundColor: "#fff",
+    },
     title: {
-        justifyContent: "space-between",
         flexDirection: "row",
         alignItems: "center",
         gap: 20,
-        marginTop: 20,
-    },
-    container: {
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: 20,
-        backgroundColor: "#fff",
-    },
-    textInput: {
-        width: "85%",
-        backgroundColor: "white",
+        marginBottom: 20,
     },
     fontSize: {
         fontSize: 32,
-        color: "#000000",
+        color: "#000",
+    },
+    textInput: {
+        width: "85%",
+        backgroundColor: "#fff",
+        marginTop: 10,
     },
     button: {
-        marginTop: 2,
+        marginTop: 20,
         width: "85%",
         backgroundColor: "#0c7eda",
         borderRadius: 10,
@@ -182,6 +209,6 @@ const styles = StyleSheet.create({
         width: "85%",
         fontSize: 12,
         color: "red",
-        marginTop: -15,
+        marginTop: 2,
     },
 });
