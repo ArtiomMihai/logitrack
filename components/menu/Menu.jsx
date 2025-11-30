@@ -17,9 +17,8 @@ export default function Menu({ isOpen,toggleMenu }) {
     <>
         <Animated.View style={[styles.main, { left: leftAnim }]}>
             <Profile toggleMenu={toggleMenu} />
-            <MenuList>
+            <MenuList/>
 
-            </MenuList>
         </Animated.View>
 
     </>
