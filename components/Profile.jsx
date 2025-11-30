@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import MenuList from "./MenuList";
 
 export default function Profile({ toggleMenu }) {
     return (
@@ -12,6 +13,7 @@ export default function Profile({ toggleMenu }) {
             <TouchableOpacity onPress={toggleMenu}>
                 <Ionicons name="close-outline" size={36} color="black" style={styles.icon} />
             </TouchableOpacity>
+
         </View>
     );
 }

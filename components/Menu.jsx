@@ -1,6 +1,7 @@
-import { StyleSheet, Animated} from "react-native";
+import {StyleSheet, Animated, TouchableOpacity} from "react-native";
 import Profile from "./Profile";
 import { useRef, useEffect } from "react";
+import MenuList from "./MenuList";
 
 export default function Menu({ isOpen,toggleMenu }) {
   const leftAnim = useRef(new Animated.Value(-260)).current;
@@ -13,9 +14,15 @@ export default function Menu({ isOpen,toggleMenu }) {
   }, [isOpen]);
 
   return (
-    <Animated.View style={[styles.main, { left: leftAnim }]}>
-            <Profile toggleMenu={toggleMenu} /> 
-    </Animated.View>
+    <>
+        <Animated.View style={[styles.main, { left: leftAnim }]}>
+            <Profile toggleMenu={toggleMenu} />
+            <MenuList>
+
+            </MenuList>
+        </Animated.View>
+
+    </>
   );
 }
 
