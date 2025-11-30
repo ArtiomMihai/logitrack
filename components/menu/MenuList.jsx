@@ -3,19 +3,22 @@ import { StyleSheet } from "react-native";
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 
+
 export default function MenuList() {
     return (
         <View style={styles.container}>
             <TouchableOpacity activeOpacity={0.8}>
+                 
                 <View style={styles.menuItem}>
-                    <SimpleLineIcons name="notebook" size={32} color="#333" style={styles.icon}/>
-                    <Text style={styles.text}>Список заявок</Text>
+                    <SimpleLineIcons name="notebook" size={32} color="#333" style={styles.icon} />
+                        <Text style={styles.text}>Список заявок</Text>
                 </View>
+                
             </TouchableOpacity>
 
             <TouchableOpacity activeOpacity={0.8}>
                 <View style={styles.menuItem}>
-                    <AntDesign name="shop" size={32} color="#333" style={styles.icon}/>
+                    <AntDesign name="shop" size={32} color="#333" style={styles.icon} />
                     <Text style={styles.text}>Магазины</Text>
                 </View>
             </TouchableOpacity>
