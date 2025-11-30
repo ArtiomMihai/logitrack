@@ -12,7 +12,7 @@ export default function Order() {
             <TouchableOpacity style={styles.row} onPress={() =>  {
             }}>
                 <View></View>
-                <AntDesign name="arrow-right" size={28} color="#b94a48"/>
+                <AntDesign name="arrow-right" size={28} color="#2192fa"/>
             </TouchableOpacity>
             <View style={styles.row}>
                 <Text style={styles.subtitle}>Всего: 30 позиций</Text>
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         color: "#333",
     },
-
     subtitle: {
         fontSize: 20,
         color: "#444",

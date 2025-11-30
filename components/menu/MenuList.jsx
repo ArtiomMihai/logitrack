@@ -10,20 +10,21 @@ export default function MenuList() {
             <TouchableOpacity activeOpacity={0.8}>
                  
                 <View style={styles.menuItem}>
-                    <SimpleLineIcons name="notebook" size={32} color="#333" style={styles.icon} />
-                        <Text style={styles.text}>Список заявок</Text>
+
+                    <SimpleLineIcons name="notebook" size={28} color="#333" style={styles.icon}/>
+                    <Text style={styles.text}>Список заявок</Text>
+
                 </View>
                 
             </TouchableOpacity>
 
             <TouchableOpacity activeOpacity={0.8}>
                 <View style={styles.menuItem}>
-                    <AntDesign name="shop" size={32} color="#333" style={styles.icon} />
+
+                    <AntDesign name="shop" size={28} color="#333" style={styles.icon}/>
                     <Text style={styles.text}>Магазины</Text>
                 </View>
             </TouchableOpacity>
-
-
         </View>
     );
 }
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     menuItem: {
         flexDirection: "row",
         alignItems: "center",
-        padding: 15,
+        padding: 10,
         borderRadius: 12,
         backgroundColor: "#D6E4FF",
         shadowColor: "#000",
@@ -52,7 +53,7 @@ const styles = StyleSheet.create({
         marginRight: 15,
     },
     text: {
-        fontSize: 16,
+        fontSize: 12,
         color: "#424242",
         fontWeight: "500",
     },
