@@ -1,21 +1,21 @@
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
 
-export default function Order() {
+export default function Order({shopName, generalPrice, positions}) {
     return (
         <View style={styles.container}>
 
             <View style={styles.row}>
-                <Text style={styles.title}>Магазин VIKTORIA</Text>
-                <Text style={styles.price}>9000 Lei</Text>
+                <Text style={styles.title}>{shopName}</Text>
+                <Text style={styles.price}>{generalPrice}</Text>
             </View>
-            <TouchableOpacity style={styles.row} onPress={() =>  {
+            <TouchableOpacity style={styles.row} onPress={() => {
             }}>
                 <View></View>
-                <AntDesign name="arrow-right" size={28} color="#b94a48"/>
+                <AntDesign name="arrow-right" size={28} color="#2192fa"/>
             </TouchableOpacity>
             <View style={styles.row}>
-                <Text style={styles.subtitle}>Всего: 30 позиций</Text>
+                <Text style={styles.subtitle}>Всего: {positions} позиции</Text>
             </View>
         </View>
     );
@@ -49,7 +49,6 @@ const styles = StyleSheet.create({
         fontWeight: "500",
         color: "#333",
     },
-
     subtitle: {
         fontSize: 20,
         color: "#444",
