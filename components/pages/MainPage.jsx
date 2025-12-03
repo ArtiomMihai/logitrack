@@ -2,6 +2,7 @@ import Header from "../Header";
 import {Button, StyleSheet, Text, View} from "react-native";
 import Menu from "../menu/Menu";
 import {useState} from "react";
+import {CityPage} from "./CityPage";
 
 
 export default function MainPage({navigation}) {
@@ -15,7 +16,7 @@ export default function MainPage({navigation}) {
         <View style={styles.container}>
 
 
-
+<CityPage></CityPage>
             <Header toggleMenu={toggleMenu}/>
             <View>
                 <Button
