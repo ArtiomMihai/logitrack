@@ -16,7 +16,7 @@ export default function MainPage({navigation}) {
         <View style={styles.container}>
 
 
-<CityPage></CityPage>
+
             <Header toggleMenu={toggleMenu}/>
             <View>
                 <Button

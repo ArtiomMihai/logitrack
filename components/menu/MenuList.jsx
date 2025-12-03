@@ -29,6 +29,13 @@ export default function MenuList() {
                     <Text style={styles.text}>Магазины</Text>
                 </View>
             </TouchableOpacity>
+            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("City")}>
+                <View style={styles.menuItem}>
+
+                    <AntDesign name="City" size={28} color="#333" style={styles.icon}/>
+                    <Text style={styles.text}>Города</Text>
+                </View>
+            </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Me")}>
 
                     <Feather style={styles.icon} name="settings" size={24} color="black" />
