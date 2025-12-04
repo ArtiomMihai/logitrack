@@ -18,7 +18,6 @@ export default function NewOrder({
     const navigation = useNavigation();
 
     const handlePress = () => {
-        // Переходим на экран деталей заказа, передавая orderId
         navigation.navigate("OrderDetails", {
             orderId: id
         });
@@ -80,8 +79,6 @@ export default function NewOrder({
         </View>
     );
 }
-
-// Функция для цвета статуса (можно вынести в отдельный файл)
 const getStatusColor = (status) => {
     switch (status?.toUpperCase()) {
         case 'NEW': return '#2196F3'; // синий

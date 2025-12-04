@@ -87,7 +87,6 @@ export default function OrderPage() {
     const calculateUniquePositions = (orderItems) => {
         if (!orderItems || !Array.isArray(orderItems)) return 0;
 
-        // Возвращаем количество элементов в массиве
         return orderItems.length;
     };
 

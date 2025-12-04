@@ -2,12 +2,15 @@ import React from 'react';
 
 
 import StackNavigator from "./navigation/StackNavigator";
+import {PaperProvider} from "react-native-paper";
 
 
 export function App() {
     return (
         <>
-            <StackNavigator></StackNavigator>
+            <PaperProvider>
+                <StackNavigator></StackNavigator>
+            </PaperProvider>
         </>
     );
 }

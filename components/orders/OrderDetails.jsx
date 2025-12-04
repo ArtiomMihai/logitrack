@@ -86,15 +86,10 @@ export default function OrderDetails() {
             <View style={styles.center}>
                 <Text style={styles.errorText}>Заказ не найден</Text>
                 <Text style={styles.errorSubtext}>Заказ с ID {orderId} не существует</Text>
-                <Text
-                    style={styles.retryText}
-                    onPress={loadOrderDetails}
-                >
-                    ⟳ Попробовать снова
-                </Text>
             </View>
         );
     }
+
     return (
         <ScrollView
             style={styles.container}
@@ -323,8 +318,8 @@ const styles = StyleSheet.create({
     tableHeader: {
         backgroundColor: "#F8F9FA",
     },
-    nameCol: { flex: 3 },
-    qtyCol: { flex: 1 },
+    nameCol: { flex: 2.6 },
+    qtyCol: { flex: 1.2 },
     priceCol: { flex: 2 },
     totalCol: { flex: 2 },
     emptyText: {
