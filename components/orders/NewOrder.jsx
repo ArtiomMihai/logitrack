@@ -1,5 +1,6 @@
 import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
-
+import {Button} from "react-native-paper";
+import EvilIcons from '@expo/vector-icons/EvilIcons';
 export default function NewOrder({
                                      createdBy,
                                      location,
@@ -39,7 +40,6 @@ export default function NewOrder({
                 <Text style={styles.price}>{created}</Text>
             </View>
 
-            {/* Обновленная строка с информацией о товарах */}
             <View style={styles.row}>
                 <Text style={styles.subtitle}>
                     Позиций: {uniquePositions || 0} шт. | Товаров: {totalItems || 0} шт. | Сумма: {totalPrice}
@@ -51,10 +51,15 @@ export default function NewOrder({
             </View>
 
             <View style={styles.statusWrapper}>
+                <TouchableOpacity style={styles.button} onPress={() => {}}>
+                    <Text style={styles.buttonText} >Перейти</Text>
+                    <EvilIcons name="arrow-right" size={32} color="white" />
 
+                </TouchableOpacity>
                 <Text style={styles.statusBadge}>{orderStatus}</Text>
-
             </View>
+
+
         </View>
     );
 }
@@ -68,6 +73,18 @@ const styles = StyleSheet.create({
         backgroundColor: "#d5f6ebff",
         borderRadius: 20,
         gap: 8,
+    },
+    button: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        width:250,
+        height:40,
+        borderRadius: 5,
+        backgroundColor: "#0C78D3",
+    },
+    buttonText: {
+        color: "white",
     },
     row: {
         flexDirection: "row",
@@ -89,14 +106,16 @@ const styles = StyleSheet.create({
         color: "#444",
     },
     statusWrapper: {
+        justifyContent: "space-between",
+        flexDirection: "row",
         width: "100%",
-        alignItems: "flex-end",
+
     },
     statusBadge: {
-        backgroundColor: "#0C78D3",
+        backgroundColor: "#424242",
         paddingVertical: 6,
         paddingHorizontal: 14,
-        borderRadius: 14,
+        borderRadius: 5,
         color: "#fff",
         fontSize: 16,
         fontWeight: "600",

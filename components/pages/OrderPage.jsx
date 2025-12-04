@@ -1,18 +1,26 @@
-import { Text, StyleSheet, ScrollView, View, RefreshControl } from "react-native";
+import { Text, StyleSheet, ScrollView, View, RefreshControl, TouchableOpacity } from "react-native";
 import NewOrder from "../orders/NewOrder";
 import { useEffect, useState } from "react";
 import { ENDPOINTS } from "../../api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {ActivityIndicator, MD2Colors} from "react-native-paper";
+import { ActivityIndicator, MD2Colors } from "react-native-paper";
 
 export default function OrderPage() {
     const [orders, setOrders] = useState([]);
+    const [filteredOrders, setFilteredOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedStatus, setSelectedStatus] = useState("ALL");
+
+    const statuses = ["ALL", "NEW", "PROCESSING", "COMPLETED", "CANCELLED"];
 
     useEffect(() => {
         loadOrders();
     }, []);
+
+    useEffect(() => {
+        applyFilter();
+    }, [orders, selectedStatus]);
 
     const loadOrders = async () => {
         try {
@@ -32,11 +40,7 @@ export default function OrderPage() {
             }
 
             const data = await response.json();
-
-            // Извлекаем массив заказов из data.content
             const ordersArray = Array.isArray(data?.content) ? data.content : [];
-
-            // Сортируем заказы по ID или дате (новые сверху)
             const sortedOrders = [...ordersArray].sort((a, b) =>
                 new Date(b.created) - new Date(a.created)
             );
@@ -51,16 +55,26 @@ export default function OrderPage() {
         }
     };
 
+    const applyFilter = () => {
+        if (selectedStatus === "ALL") {
+            setFilteredOrders(orders);
+        } else {
+            const filtered = orders.filter(order =>
+                order.orderStatus?.toUpperCase() === selectedStatus.toUpperCase()
+            );
+            setFilteredOrders(filtered);
+        }
+    };
+
     const onRefresh = () => {
         setRefreshing(true);
         loadOrders();
     };
 
-    // Функция для подсчета общего количества товаров в заказе
+
     const calculateTotalItems = (orderItems) => {
         if (!orderItems || !Array.isArray(orderItems)) return 0;
 
-        // Суммируем quantity каждого товара
         const total = orderItems.reduce((sum, item) => {
             return sum + (Number(item.quantity) || 0);
         }, 0);
@@ -68,7 +82,6 @@ export default function OrderPage() {
         return total;
     };
 
-    // Функция для подсчета количества уникальных позиций (разных товаров)
     const calculateUniquePositions = (orderItems) => {
         if (!orderItems || !Array.isArray(orderItems)) return 0;
 
@@ -76,7 +89,6 @@ export default function OrderPage() {
         return orderItems.length;
     };
 
-    // Форматируем дату для отображения
     const formatDate = (dateString) => {
         if (!dateString) return "Нет даты";
         try {
@@ -88,6 +100,27 @@ export default function OrderPage() {
             });
         } catch (e) {
             return dateString.substring(0, 10);
+        }
+    };
+
+    const getStatusDisplayName = (status) => {
+        switch (status.toUpperCase()) {
+            case "ALL": return "Все";
+            case "NEW": return "Новые";
+            case "PROCESSING": return "В обработке";
+            case "COMPLETED": return "Завершённые";
+            case "CANCELLED": return "Отменённые";
+            default: return status;
+        }
+    };
+
+    const getStatusColor = (status) => {
+        switch (status.toUpperCase()) {
+            case "NEW": return "#2196F3";
+            case "PROCESSING": return "#FF9800";
+            case "COMPLETED": return "#4CAF50";
+            case "CANCELLED": return "#F44336";
+            default: return "#9E9E9E";
         }
     };
 
@@ -105,18 +138,70 @@ export default function OrderPage() {
         >
             <Text style={styles.header}>Страница заказов</Text>
 
+
+            <View style={styles.filterContainer}>
+                <ScrollView
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    style={styles.filterScroll}
+                >
+                    {statuses.map(status => (
+                        <TouchableOpacity
+                            key={status}
+                            style={[
+                                styles.filterButton,
+                                selectedStatus === status && styles.filterButtonActive,
+                                selectedStatus === status && {
+                                    backgroundColor: getStatusColor(status)
+                                }
+                            ]}
+                            onPress={() => setSelectedStatus(status)}
+                        >
+                            <Text style={[
+                                styles.filterText,
+                                selectedStatus === status && styles.filterTextActive
+                            ]}>
+                                {getStatusDisplayName(status)}
+                            </Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
+
+
+                <View style={styles.filterInfo}>
+                    <Text style={styles.filterInfoText}>
+                        Показано: {filteredOrders.length} из {orders.length}
+                    </Text>
+                    {selectedStatus !== "ALL" && (
+                        <TouchableOpacity
+                            onPress={() => setSelectedStatus("ALL")}
+                            style={styles.clearFilter}
+                        >
+                            <Text style={styles.clearFilterText}>× Сбросить</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
+            </View>
+
             {loading ? (
                 <View style={styles.center}>
                     <ActivityIndicator animating={true} color={MD2Colors.red800} />
                 </View>
-            ) : orders.length === 0 ? (
+            ) : filteredOrders.length === 0 ? (
                 <View style={styles.center}>
-                    <Text style={styles.emptyText}>Нет заказов</Text>
-                    <Text style={styles.emptySubtext}>Создайте первый заказ</Text>
+                    <Text style={styles.emptyText}>
+                        {selectedStatus === "ALL"
+                            ? "Нет заказов"
+                            : `Нет заказов со статусом "${getStatusDisplayName(selectedStatus)}"`}
+                    </Text>
+                    <Text style={styles.emptySubtext}>
+                        {selectedStatus === "ALL"
+                            ? "Создайте первый заказ"
+                            : "Попробуйте изменить фильтр"}
+                    </Text>
                 </View>
             ) : (
-                orders.map(order => {
-
+                filteredOrders.map(order => {
                     const totalItems = calculateTotalItems(order.orderItems);
                     const uniquePositions = calculateUniquePositions(order.orderItems);
 
@@ -157,6 +242,64 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         textAlign: "center",
         color: "#333",
+    },
+    filterContainer: {
+        marginBottom: 16,
+        backgroundColor: "white",
+        borderRadius: 12,
+        padding: 12,
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    filterScroll: {
+        marginBottom: 8,
+    },
+    filterButton: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        backgroundColor: "#F5F5F5",
+        marginRight: 8,
+        minWidth: 80,
+        alignItems: "center",
+    },
+    filterButtonActive: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3,
+    },
+    filterText: {
+        fontSize: 14,
+        color: "#666",
+        fontWeight: "500",
+    },
+    filterTextActive: {
+        color: "white",
+        fontWeight: "600",
+    },
+    filterInfo: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 4,
+    },
+    filterInfoText: {
+        fontSize: 13,
+        color: "#666",
+    },
+    clearFilter: {
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+    },
+    clearFilterText: {
+        fontSize: 13,
+        color: "#F44336",
+        fontWeight: "500",
     },
     center: {
         flex: 1,
