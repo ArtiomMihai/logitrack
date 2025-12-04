@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
 
 export function CityPage() {
     const cities = [
@@ -16,11 +16,15 @@ export function CityPage() {
     ];
 
     return (
-        <View>
+        <View style={styles.container}>
+            <Text style={styles.title}>Список городов:</Text>
             {cities.map((city, index) => (
                 <TouchableOpacity key={index} activeOpacity={0.7}>
                     <View style={styles.spacecont}>
-                        <Text style={styles.cityText}>{city}</Text>
+                        <Text>{city}</Text>
+                        <TouchableOpacity style={styles.button}>
+                            <Text style={styles.viewShops}>Посмотреть магазины</Text>
+                        </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
             ))}
@@ -29,18 +33,39 @@ export function CityPage() {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        alignItems: "center",
+        gap: 20,
+    },
     spacecont: {
-        width: 360,
-        backgroundColor: "#4d9cf7",
-        height: 45,
-        marginVertical: 1,
+        width: 320,
+        borderWidth: 1,
+        height: 200,
         justifyContent: "center",
         alignItems: "center",
-        borderRadius: 15,
+        gap: 20,
+        borderRadius: 20,
+    },
+    button: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        borderRadius: 10,
+        width: 250,
+        height: 60,
+        backgroundColor: "#0c7eda",
     },
     cityText: {
         color: "#fff",
         fontSize: 18,
         fontWeight: "600",
     },
+    viewShops: {
+        color: "#fff",
+    },
+    title: {
+        paddingVertical: 20,
+        fontSize: 18,
+        textAlign: "center",
+    }
 });

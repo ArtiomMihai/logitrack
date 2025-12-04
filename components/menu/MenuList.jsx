@@ -4,7 +4,7 @@ import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import {useNavigation} from "@react-navigation/native";
 import Feather from '@expo/vector-icons/Feather';
-
+import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
 
 export default function MenuList() {
     const navigation = useNavigation()
@@ -32,14 +32,16 @@ export default function MenuList() {
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("City")}>
                 <View style={styles.menuItem}>
 
-                    <AntDesign name="City" size={28} color="#333" style={styles.icon}/>
+                    <FontAwesome5 name="city" size={24} color="black" style={styles.icon}/>
                     <Text style={styles.text}>Города</Text>
                 </View>
             </TouchableOpacity>
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Me")}>
 
-                    <Feather style={styles.icon} name="settings" size={24} color="black" />
-                    <Text style={styles.text}>Профиль</Text>
+                    <View style={styles.menuItem}>
+                        <Feather style={styles.icon} name="settings" size={24} color="black" />
+                        <Text style={styles.text}>Профиль</Text>
+                    </View>
 
             </TouchableOpacity>
         </View>
