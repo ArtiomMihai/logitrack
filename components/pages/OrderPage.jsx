@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { ENDPOINTS } from "../../api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator, MD2Colors } from "react-native-paper";
+import {useNavigation} from "@react-navigation/native";
+
 
 export default function OrderPage() {
     const [orders, setOrders] = useState([]);
@@ -13,7 +15,7 @@ export default function OrderPage() {
     const [selectedStatus, setSelectedStatus] = useState("ALL");
 
     const statuses = ["ALL", "NEW", "PROCESSING", "COMPLETED", "CANCELLED"];
-
+    const navigation = useNavigation();
     useEffect(() => {
         loadOrders();
     }, []);
@@ -136,7 +138,7 @@ export default function OrderPage() {
                 />
             }
         >
-            <Text style={styles.header}>Страница заказов</Text>
+            <Text style={styles.header}>Заказы</Text>
 
 
             <View style={styles.filterContainer}>
@@ -207,6 +209,7 @@ export default function OrderPage() {
 
                     return (
                         <NewOrder
+                            id={order.orderId}
                             key={order.orderId}
                             createdBy={order.createdBy || "Не указано"}
                             location={order.location || "Не указано"}

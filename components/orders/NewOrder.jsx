@@ -1,7 +1,9 @@
-import {View, Text, StyleSheet, TouchableOpacity} from "react-native";
-import {Button} from "react-native-paper";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 import EvilIcons from '@expo/vector-icons/EvilIcons';
+
 export default function NewOrder({
+                                     id, // Добавляем ID заказа
                                      createdBy,
                                      location,
                                      shopName,
@@ -13,6 +15,15 @@ export default function NewOrder({
                                      totalItems,
                                      uniquePositions
                                  }) {
+    const navigation = useNavigation();
+
+    const handlePress = () => {
+        // Переходим на экран деталей заказа, передавая orderId
+        navigation.navigate("OrderDetails", {
+            orderId: id
+        });
+    };
+
     return (
         <View style={styles.container}>
             <View style={styles.row}>
@@ -51,18 +62,35 @@ export default function NewOrder({
             </View>
 
             <View style={styles.statusWrapper}>
-                <TouchableOpacity style={styles.button} onPress={() => {}}>
-                    <Text style={styles.buttonText} >Перейти</Text>
+                <TouchableOpacity
+                    style={styles.button}
+                    onPress={handlePress}
+                >
+                    <Text style={styles.buttonText}>Перейти</Text>
                     <EvilIcons name="arrow-right" size={32} color="white" />
-
                 </TouchableOpacity>
-                <Text style={styles.statusBadge}>{orderStatus}</Text>
+
+                <Text style={[
+                    styles.statusBadge,
+                    { backgroundColor: getStatusColor(orderStatus) }
+                ]}>
+                    {orderStatus}
+                </Text>
             </View>
-
-
         </View>
     );
 }
+
+// Функция для цвета статуса (можно вынести в отдельный файл)
+const getStatusColor = (status) => {
+    switch (status?.toUpperCase()) {
+        case 'NEW': return '#2196F3'; // синий
+        case 'PROCESSING': return '#FF9800'; // оранжевый
+        case 'COMPLETED': return '#4CAF50'; // зеленый
+        case 'CANCELLED': return '#F44336'; // красный
+        default: return '#424242'; // серый
+    }
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -78,13 +106,15 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        width:250,
-        height:40,
+        width: 250,
+        height: 40,
         borderRadius: 5,
         backgroundColor: "#0C78D3",
     },
     buttonText: {
         color: "white",
+        fontSize: 16,
+        fontWeight: "600",
     },
     row: {
         flexDirection: "row",
@@ -109,10 +139,9 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         flexDirection: "row",
         width: "100%",
-
+        alignItems: "center",
     },
     statusBadge: {
-        backgroundColor: "#424242",
         paddingVertical: 6,
         paddingHorizontal: 14,
         borderRadius: 5,
