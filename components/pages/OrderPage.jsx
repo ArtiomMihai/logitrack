@@ -1,11 +1,19 @@
-import { Text, StyleSheet, ScrollView, View, RefreshControl, TouchableOpacity } from "react-native";
+import {
+    Text,
+    StyleSheet,
+    ScrollView,
+    View,
+    RefreshControl,
+    TouchableOpacity,
+    Dimensions,
+    Platform
+} from "react-native";
 import NewOrder from "../orders/NewOrder";
 import { useEffect, useState } from "react";
 import { ENDPOINTS } from "../../api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ActivityIndicator, MD2Colors } from "react-native-paper";
-import {useNavigation} from "@react-navigation/native";
-
+import { useNavigation } from "@react-navigation/native";
 
 export default function OrderPage() {
     const [orders, setOrders] = useState([]);
@@ -16,6 +24,12 @@ export default function OrderPage() {
 
     const statuses = ["ALL", "NEW", "PROCESSING", "COMPLETED", "CANCELLED"];
     const navigation = useNavigation();
+
+    // Получаем ширину экрана один раз
+    const screenWidth = Dimensions.get('window').width;
+    const isSmallScreen = screenWidth < 375;
+    const isLargeScreen = screenWidth > 768;
+
     useEffect(() => {
         loadOrders();
     }, []);
@@ -73,7 +87,6 @@ export default function OrderPage() {
         loadOrders();
     };
 
-
     const calculateTotalItems = (orderItems) => {
         if (!orderItems || !Array.isArray(orderItems)) return 0;
 
@@ -108,9 +121,9 @@ export default function OrderPage() {
         switch (status.toUpperCase()) {
             case "ALL": return "Все";
             case "NEW": return "Новые";
-            case "PROCESSING": return "В обработке";
-            case "COMPLETED": return "Завершённые";
-            case "CANCELLED": return "Отменённые";
+            case "PROCESSING": return isSmallScreen ? "В работе" : "В обработке";
+            case "COMPLETED": return isSmallScreen ? "Готово" : "Завершено";
+            case "CANCELLED": return isSmallScreen ? "Отмена" : "Отменено";
             default: return status;
         }
     };
@@ -126,105 +139,155 @@ export default function OrderPage() {
     };
 
     return (
-        <ScrollView
-            style={styles.container}
-            contentContainerStyle={styles.content}
-            refreshControl={
-                <RefreshControl
-                    refreshing={refreshing}
-                    onRefresh={onRefresh}
-                    colors={["#0C78D3"]}
-                />
-            }
-        >
-            <Text style={styles.header}>Заказы</Text>
+        <View style={styles.container}>
+            <ScrollView
+                contentContainerStyle={[
+                    styles.content,
+                    {
+                        paddingHorizontal: 16,  // ФИКСИРОВАННЫЙ ОТСТУП
+                        gap: 12,
+                        paddingBottom: Platform.OS === 'ios' ? 30 : 20,
+                    },
+                    isLargeScreen && styles.contentLarge
+                ]}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
+                        colors={["#0C78D3"]}
+                    />
+                }
+                showsVerticalScrollIndicator={true}
+            >
+                <Text style={[
+                    styles.header,
+                    isSmallScreen && styles.headerSmall,
+                    isLargeScreen && styles.headerLarge
+                ]}>
+                    Заказы
+                </Text>
 
+                <View style={[
+                    styles.filterContainer,
+                    { padding: isSmallScreen ? 10 : 12 }
+                ]}>
+                    <ScrollView
+                        horizontal
+                        showsHorizontalScrollIndicator={false}
+                        style={styles.filterScroll}
+                        contentContainerStyle={styles.filterScrollContent}
+                    >
+                        {statuses.map(status => (
+                            <TouchableOpacity
+                                key={status}
+                                style={[
+                                    styles.filterButton,
+                                    isSmallScreen && styles.filterButtonSmall,
+                                    selectedStatus === status && styles.filterButtonActive,
+                                    selectedStatus === status && {
+                                        backgroundColor: getStatusColor(status)
+                                    }
+                                ]}
+                                onPress={() => setSelectedStatus(status)}
+                            >
+                                <Text style={[
+                                    styles.filterText,
+                                    isSmallScreen && styles.filterTextSmall,
+                                    selectedStatus === status && styles.filterTextActive
+                                ]}>
+                                    {getStatusDisplayName(status)}
+                                </Text>
+                            </TouchableOpacity>
+                        ))}
+                    </ScrollView>
 
-            <View style={styles.filterContainer}>
-                <ScrollView
-                    horizontal
-                    showsHorizontalScrollIndicator={false}
-                    style={styles.filterScroll}
-                >
-                    {statuses.map(status => (
-                        <TouchableOpacity
-                            key={status}
-                            style={[
-                                styles.filterButton,
-                                selectedStatus === status && styles.filterButtonActive,
-                                selectedStatus === status && {
-                                    backgroundColor: getStatusColor(status)
-                                }
-                            ]}
-                            onPress={() => setSelectedStatus(status)}
-                        >
-                            <Text style={[
-                                styles.filterText,
-                                selectedStatus === status && styles.filterTextActive
-                            ]}>
-                                {getStatusDisplayName(status)}
-                            </Text>
-                        </TouchableOpacity>
-                    ))}
-                </ScrollView>
-
-
-                <View style={styles.filterInfo}>
-                    <Text style={styles.filterInfoText}>
-                        Показано: {filteredOrders.length} из {orders.length}
-                    </Text>
-                    {selectedStatus !== "ALL" && (
-                        <TouchableOpacity
-                            onPress={() => setSelectedStatus("ALL")}
-                            style={styles.clearFilter}
-                        >
-                            <Text style={styles.clearFilterText}>× Сбросить</Text>
-                        </TouchableOpacity>
-                    )}
+                    <View style={[
+                        styles.filterInfo,
+                        isSmallScreen && styles.filterInfoSmall
+                    ]}>
+                        <Text style={[
+                            styles.filterInfoText,
+                            isSmallScreen && styles.filterInfoTextSmall
+                        ]}>
+                            Показано: {filteredOrders.length} из {orders.length}
+                        </Text>
+                        {selectedStatus !== "ALL" && (
+                            <TouchableOpacity
+                                onPress={() => setSelectedStatus("ALL")}
+                                style={styles.clearFilter}
+                            >
+                                <Text style={[
+                                    styles.clearFilterText,
+                                    isSmallScreen && styles.clearFilterTextSmall
+                                ]}>
+                                    {isSmallScreen ? '× Сбросить' : '× Сбросить фильтр'}
+                                </Text>
+                            </TouchableOpacity>
+                        )}
+                    </View>
                 </View>
-            </View>
 
-            {loading ? (
-                <View style={styles.center}>
-                    <ActivityIndicator animating={true} color={MD2Colors.red800} />
-                </View>
-            ) : filteredOrders.length === 0 ? (
-                <View style={styles.center}>
-                    <Text style={styles.emptyText}>
-                        {selectedStatus === "ALL"
-                            ? "Нет заказов"
-                            : `Нет заказов со статусом "${getStatusDisplayName(selectedStatus)}"`}
-                    </Text>
-                    <Text style={styles.emptySubtext}>
-                        {selectedStatus === "ALL"
-                            ? "Создайте первый заказ"
-                            : "Попробуйте изменить фильтр"}
-                    </Text>
-                </View>
-            ) : (
-                filteredOrders.map(order => {
-                    const totalItems = calculateTotalItems(order.orderItems);
-                    const uniquePositions = calculateUniquePositions(order.orderItems);
-
-                    return (
-                        <NewOrder
-                            id={order.orderId}
-                            key={order.orderId}
-                            createdBy={order.createdBy || "Не указано"}
-                            location={order.location || "Не указано"}
-                            shopName={order.shopName || "Не указано"}
-                            address={order.address || "Не указано"}
-                            created={formatDate(order.created)}
-                            totalPrice={`${order.totalPrice || 0} MDL`}
-                            orderStatus={order.orderStatus || "NEW"}
-                            comment={order.comment || "Нет комментария"}
-                            totalItems={totalItems}
-                            uniquePositions={uniquePositions}
+                {loading ? (
+                    <View style={styles.center}>
+                        <ActivityIndicator
+                            animating={true}
+                            color={MD2Colors.red800}
+                            size={isLargeScreen ? "large" : "small"}
                         />
-                    );
-                })
-            )}
-        </ScrollView>
+                    </View>
+                ) : filteredOrders.length === 0 ? (
+                    <View style={styles.center}>
+                        <Text style={[
+                            styles.emptyText,
+                            isSmallScreen && styles.emptyTextSmall,
+                            isLargeScreen && styles.emptyTextLarge
+                        ]}>
+                            {selectedStatus === "ALL"
+                                ? "Нет заказов"
+                                : `Нет заказов со статусом "${getStatusDisplayName(selectedStatus)}"`}
+                        </Text>
+                        <Text style={[
+                            styles.emptySubtext,
+                            isSmallScreen && styles.emptySubtextSmall,
+                            isLargeScreen && styles.emptySubtextLarge
+                        ]}>
+                            {selectedStatus === "ALL"
+                                ? "Создайте первый заказ"
+                                : "Попробуйте изменить фильтр"}
+                        </Text>
+                    </View>
+                ) : (
+                    <View style={styles.ordersGrid}>
+                        {filteredOrders.map(order => {
+                            const totalItems = calculateTotalItems(order.orderItems);
+                            const uniquePositions = calculateUniquePositions(order.orderItems);
+
+                            return (
+                                <View
+                                    key={order.orderId}
+                                    style={styles.orderWrapper}
+                                >
+                                    <NewOrder
+                                        id={order.orderId}
+                                        createdBy={order.createdBy || "Не указано"}
+                                        location={order.location || "Не указано"}
+                                        shopName={order.shopName || "Не указано"}
+                                        address={order.address || "Не указано"}
+                                        created={formatDate(order.created)}
+                                        totalPrice={`${order.totalPrice || 0} MDL`}
+                                        orderStatus={order.orderStatus || "NEW"}
+                                        comment={order.comment || "Нет комментария"}
+                                        totalItems={totalItems}
+                                        uniquePositions={uniquePositions}
+                                        isSmallScreen={isSmallScreen}
+                                    />
+                                </View>
+                            );
+                        })}
+                    </View>
+                )}
+            </ScrollView>
+        </View>
     );
 }
 
@@ -234,22 +297,33 @@ const styles = StyleSheet.create({
         backgroundColor: "#EFEFEF",
     },
     content: {
-        padding: 16,
-        gap: 12,
-        paddingBottom: 30,
+        flexGrow: 1,
+        paddingTop: 16,
+    },
+    contentLarge: {
+        maxWidth: 1200,
+        alignSelf: 'center',
+        width: '100%',
     },
     header: {
-        fontSize: 24,
+        fontSize: 22,
         fontWeight: "600",
         marginBottom: 20,
         textAlign: "center",
         color: "#333",
     },
+    headerSmall: {
+        fontSize: 20,
+        marginBottom: 16,
+    },
+    headerLarge: {
+        fontSize: 26,
+        marginBottom: 24,
+    },
     filterContainer: {
         marginBottom: 16,
         backgroundColor: "white",
         borderRadius: 12,
-        padding: 12,
         shadowColor: "#000",
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.05,
@@ -259,6 +333,9 @@ const styles = StyleSheet.create({
     filterScroll: {
         marginBottom: 8,
     },
+    filterScrollContent: {
+        paddingRight: 8,
+    },
     filterButton: {
         paddingHorizontal: 16,
         paddingVertical: 8,
@@ -267,6 +344,13 @@ const styles = StyleSheet.create({
         marginRight: 8,
         minWidth: 80,
         alignItems: "center",
+        justifyContent: 'center',
+    },
+    filterButtonSmall: {
+        paddingHorizontal: 12,
+        paddingVertical: 6,
+        minWidth: 70,
+        marginRight: 6,
     },
     filterButtonActive: {
         shadowColor: "#000",
@@ -279,6 +363,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#666",
         fontWeight: "500",
+        textAlign: 'center',
+    },
+    filterTextSmall: {
+        fontSize: 12,
     },
     filterTextActive: {
         color: "white",
@@ -290,9 +378,17 @@ const styles = StyleSheet.create({
         alignItems: "center",
         paddingHorizontal: 4,
     },
+    filterInfoSmall: {
+        flexDirection: "column",
+        alignItems: "flex-start",
+        gap: 4,
+    },
     filterInfoText: {
         fontSize: 13,
         color: "#666",
+    },
+    filterInfoTextSmall: {
+        fontSize: 12,
     },
     clearFilter: {
         paddingHorizontal: 10,
@@ -303,22 +399,49 @@ const styles = StyleSheet.create({
         color: "#F44336",
         fontWeight: "500",
     },
+    clearFilterTextSmall: {
+        fontSize: 12,
+    },
     center: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
         minHeight: 200,
+        paddingVertical: 40,
     },
     emptyText: {
         fontSize: 18,
         color: "#666",
         textAlign: "center",
         marginTop: 20,
+        paddingHorizontal: 20,
+        fontWeight: '500',
+    },
+    emptyTextSmall: {
+        fontSize: 16,
+        paddingHorizontal: 16,
+    },
+    emptyTextLarge: {
+        fontSize: 20,
     },
     emptySubtext: {
         fontSize: 14,
         color: "#999",
         textAlign: "center",
         marginTop: 8,
+        paddingHorizontal: 20,
+    },
+    emptySubtextSmall: {
+        fontSize: 13,
+        paddingHorizontal: 16,
+    },
+    emptySubtextLarge: {
+        fontSize: 16,
+    },
+    ordersGrid: {
+        gap: 12,
+    },
+    orderWrapper: {
+        width: '100%',
     },
 });

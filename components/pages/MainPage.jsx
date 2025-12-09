@@ -3,6 +3,7 @@ import {Button, StyleSheet, Text, View} from "react-native";
 import Menu from "../menu/Menu";
 import {useState} from "react";
 import {CityPage} from "./CityPage";
+import Product from "../Product";
 
 
 export default function MainPage({navigation}) {
