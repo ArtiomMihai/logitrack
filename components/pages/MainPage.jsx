@@ -2,8 +2,7 @@ import Header from "../Header";
 import {Button, StyleSheet, Text, View} from "react-native";
 import Menu from "../menu/Menu";
 import {useState} from "react";
-import {CityPage} from "./CityPage";
-import Product from "../Product";
+import CreateOrder from "./CreateOrder";
 
 
 export default function MainPage({navigation}) {
@@ -30,7 +29,6 @@ export default function MainPage({navigation}) {
                 />
             </View>
             <Menu isOpen={isOpen} toggleMenu={toggleMenu}/>
-
         </View>
     )
 }

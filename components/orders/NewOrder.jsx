@@ -91,9 +91,9 @@ const getStatusColor = (status) => {
 
 const styles = StyleSheet.create({
     container: {
-        width: 360,
+        width: 330,
         paddingVertical: 18,
-        paddingHorizontal: 12,
+        paddingHorizontal: 4,
         flexDirection: "column",
         backgroundColor: "#d5f6ebff",
         borderRadius: 20,
@@ -103,7 +103,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "center",
-        width: 250,
+        width: 220,
         height: 40,
         borderRadius: 5,
         backgroundColor: "#0C78D3",
@@ -111,12 +111,13 @@ const styles = StyleSheet.create({
     buttonText: {
         color: "white",
         fontSize: 16,
-        fontWeight: "600",
+        fontWeight: "500",
     },
     row: {
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
+        paddingHorizontal: 7,
     },
     title: {
         fontSize: 18,
@@ -140,7 +141,7 @@ const styles = StyleSheet.create({
     },
     statusBadge: {
         paddingVertical: 6,
-        paddingHorizontal: 14,
+        paddingHorizontal: 16,
         borderRadius: 5,
         color: "#fff",
         fontSize: 16,

@@ -1,13 +1,4 @@
-import {
-    Text,
-    StyleSheet,
-    ScrollView,
-    View,
-    RefreshControl,
-    TouchableOpacity,
-    Dimensions,
-    Platform
-} from "react-native";
+import { Text, StyleSheet, ScrollView, View, RefreshControl, TouchableOpacity, Dimensions, Platform } from "react-native";
 import NewOrder from "../orders/NewOrder";
 import { useEffect, useState } from "react";
 import { ENDPOINTS } from "../../api";
@@ -25,7 +16,6 @@ export default function OrderPage() {
     const statuses = ["ALL", "NEW", "PROCESSING", "COMPLETED", "CANCELLED"];
     const navigation = useNavigation();
 
-    // Получаем ширину экрана один раз
     const screenWidth = Dimensions.get('window').width;
     const isSmallScreen = screenWidth < 375;
     const isLargeScreen = screenWidth > 768;
@@ -41,13 +31,9 @@ export default function OrderPage() {
     const loadOrders = async () => {
         try {
             const token = await AsyncStorage.getItem("token");
-
             const response = await fetch(ENDPOINTS.GET_ORDERS, {
                 method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,
-                }
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
             });
 
             if (!response.ok) {
@@ -57,12 +43,7 @@ export default function OrderPage() {
 
             const data = await response.json();
             const ordersArray = Array.isArray(data?.content) ? data.content : [];
-            const sortedOrders = [...ordersArray].sort((a, b) =>
-                new Date(b.created) - new Date(a.created)
-            );
-
-            setOrders(sortedOrders);
-
+            setOrders([...ordersArray].sort((a, b) => new Date(b.created) - new Date(a.created)));
         } catch (e) {
             console.log("Ошибка:", e);
         } finally {
@@ -72,14 +53,8 @@ export default function OrderPage() {
     };
 
     const applyFilter = () => {
-        if (selectedStatus === "ALL") {
-            setFilteredOrders(orders);
-        } else {
-            const filtered = orders.filter(order =>
-                order.orderStatus?.toUpperCase() === selectedStatus.toUpperCase()
-            );
-            setFilteredOrders(filtered);
-        }
+        if (selectedStatus === "ALL") setFilteredOrders(orders);
+        else setFilteredOrders(orders.filter(o => o.orderStatus?.toUpperCase() === selectedStatus.toUpperCase()));
     };
 
     const onRefresh = () => {
@@ -87,31 +62,11 @@ export default function OrderPage() {
         loadOrders();
     };
 
-    const calculateTotalItems = (orderItems) => {
-        if (!orderItems || !Array.isArray(orderItems)) return 0;
-
-        const total = orderItems.reduce((sum, item) => {
-            return sum + (Number(item.quantity) || 0);
-        }, 0);
-
-        return total;
-    };
-
-    const calculateUniquePositions = (orderItems) => {
-        if (!orderItems || !Array.isArray(orderItems)) return 0;
-
-        return orderItems.length;
-    };
-
     const formatDate = (dateString) => {
         if (!dateString) return "Нет даты";
         try {
             const date = new Date(dateString);
-            return date.toLocaleDateString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
+            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
         } catch (e) {
             return dateString.substring(0, 10);
         }
@@ -141,85 +96,41 @@ export default function OrderPage() {
     return (
         <View style={styles.container}>
             <ScrollView
-                contentContainerStyle={[
-                    styles.content,
-                    {
-                        paddingHorizontal: 16,  // ФИКСИРОВАННЫЙ ОТСТУП
-                        gap: 12,
-                        paddingBottom: Platform.OS === 'ios' ? 30 : 20,
-                    },
-                    isLargeScreen && styles.contentLarge
-                ]}
-                refreshControl={
-                    <RefreshControl
-                        refreshing={refreshing}
-                        onRefresh={onRefresh}
-                        colors={["#0C78D3"]}
-                    />
-                }
-                showsVerticalScrollIndicator={true}
+                contentContainerStyle={[styles.content, { paddingHorizontal: 16, gap: 12, paddingBottom: Platform.OS === 'ios' ? 30 : 20 }, isLargeScreen && styles.contentLarge]}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0C78D3"]} />}
             >
-                <Text style={[
-                    styles.header,
-                    isSmallScreen && styles.headerSmall,
-                    isLargeScreen && styles.headerLarge
-                ]}>
-                    Заказы
-                </Text>
+                <Text style={[styles.header, isSmallScreen && styles.headerSmall, isLargeScreen && styles.headerLarge]}>Заказы</Text>
 
-                <View style={[
-                    styles.filterContainer,
-                    { padding: isSmallScreen ? 10 : 12 }
-                ]}>
-                    <ScrollView
-                        horizontal
-                        showsHorizontalScrollIndicator={false}
-                        style={styles.filterScroll}
-                        contentContainerStyle={styles.filterScrollContent}
-                    >
+                {/* Кнопка "+" для создания заказа */}
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={() => navigation.navigate("Orderses")}
+                >
+                    <Text style={styles.addButtonText}>+ Создать заказ</Text>
+                </TouchableOpacity>
+
+                <View style={[styles.filterContainer, { padding: isSmallScreen ? 10 : 12 }]}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterScrollContent}>
                         {statuses.map(status => (
                             <TouchableOpacity
                                 key={status}
-                                style={[
-                                    styles.filterButton,
-                                    isSmallScreen && styles.filterButtonSmall,
-                                    selectedStatus === status && styles.filterButtonActive,
-                                    selectedStatus === status && {
-                                        backgroundColor: getStatusColor(status)
-                                    }
-                                ]}
+                                style={[styles.filterButton, isSmallScreen && styles.filterButtonSmall, selectedStatus === status && styles.filterButtonActive, selectedStatus === status && { backgroundColor: getStatusColor(status) }]}
                                 onPress={() => setSelectedStatus(status)}
                             >
-                                <Text style={[
-                                    styles.filterText,
-                                    isSmallScreen && styles.filterTextSmall,
-                                    selectedStatus === status && styles.filterTextActive
-                                ]}>
+                                <Text style={[styles.filterText, isSmallScreen && styles.filterTextSmall, selectedStatus === status && styles.filterTextActive]}>
                                     {getStatusDisplayName(status)}
                                 </Text>
                             </TouchableOpacity>
                         ))}
                     </ScrollView>
 
-                    <View style={[
-                        styles.filterInfo,
-                        isSmallScreen && styles.filterInfoSmall
-                    ]}>
-                        <Text style={[
-                            styles.filterInfoText,
-                            isSmallScreen && styles.filterInfoTextSmall
-                        ]}>
+                    <View style={[styles.filterInfo, isSmallScreen && styles.filterInfoSmall]}>
+                        <Text style={[styles.filterInfoText, isSmallScreen && styles.filterInfoTextSmall]}>
                             Показано: {filteredOrders.length} из {orders.length}
                         </Text>
                         {selectedStatus !== "ALL" && (
-                            <TouchableOpacity
-                                onPress={() => setSelectedStatus("ALL")}
-                                style={styles.clearFilter}
-                            >
-                                <Text style={[
-                                    styles.clearFilterText,
-                                    isSmallScreen && styles.clearFilterTextSmall
-                                ]}>
+                            <TouchableOpacity onPress={() => setSelectedStatus("ALL")} style={styles.clearFilter}>
+                                <Text style={[styles.clearFilterText, isSmallScreen && styles.clearFilterTextSmall]}>
                                     {isSmallScreen ? '× Сбросить' : '× Сбросить фильтр'}
                                 </Text>
                             </TouchableOpacity>
@@ -229,61 +140,37 @@ export default function OrderPage() {
 
                 {loading ? (
                     <View style={styles.center}>
-                        <ActivityIndicator
-                            animating={true}
-                            color={MD2Colors.red800}
-                            size={isLargeScreen ? "large" : "small"}
-                        />
+                        <ActivityIndicator animating={true} color={MD2Colors.red800} size={isLargeScreen ? "large" : "small"} />
                     </View>
                 ) : filteredOrders.length === 0 ? (
                     <View style={styles.center}>
-                        <Text style={[
-                            styles.emptyText,
-                            isSmallScreen && styles.emptyTextSmall,
-                            isLargeScreen && styles.emptyTextLarge
-                        ]}>
-                            {selectedStatus === "ALL"
-                                ? "Нет заказов"
-                                : `Нет заказов со статусом "${getStatusDisplayName(selectedStatus)}"`}
+                        <Text style={[styles.emptyText, isSmallScreen && styles.emptyTextSmall, isLargeScreen && styles.emptyTextLarge]}>
+                            {selectedStatus === "ALL" ? "Нет заказов" : `Нет заказов со статусом "${getStatusDisplayName(selectedStatus)}"`}
                         </Text>
-                        <Text style={[
-                            styles.emptySubtext,
-                            isSmallScreen && styles.emptySubtextSmall,
-                            isLargeScreen && styles.emptySubtextLarge
-                        ]}>
-                            {selectedStatus === "ALL"
-                                ? "Создайте первый заказ"
-                                : "Попробуйте изменить фильтр"}
+                        <Text style={[styles.emptySubtext, isSmallScreen && styles.emptySubtextSmall, isLargeScreen && styles.emptySubtextLarge]}>
+                            {selectedStatus === "ALL" ? "Создайте первый заказ" : "Попробуйте изменить фильтр"}
                         </Text>
                     </View>
                 ) : (
                     <View style={styles.ordersGrid}>
-                        {filteredOrders.map(order => {
-                            const totalItems = calculateTotalItems(order.orderItems);
-                            const uniquePositions = calculateUniquePositions(order.orderItems);
-
-                            return (
-                                <View
-                                    key={order.orderId}
-                                    style={styles.orderWrapper}
-                                >
-                                    <NewOrder
-                                        id={order.orderId}
-                                        createdBy={order.createdBy || "Не указано"}
-                                        location={order.location || "Не указано"}
-                                        shopName={order.shopName || "Не указано"}
-                                        address={order.address || "Не указано"}
-                                        created={formatDate(order.created)}
-                                        totalPrice={`${order.totalPrice || 0} MDL`}
-                                        orderStatus={order.orderStatus || "NEW"}
-                                        comment={order.comment || "Нет комментария"}
-                                        totalItems={totalItems}
-                                        uniquePositions={uniquePositions}
-                                        isSmallScreen={isSmallScreen}
-                                    />
-                                </View>
-                            );
-                        })}
+                        {filteredOrders.map(order => (
+                            <View key={order.orderId} style={styles.orderWrapper}>
+                                <NewOrder
+                                    id={order.orderId}
+                                    createdBy={order.createdBy || "Не указано"}
+                                    location={order.location || "Не указано"}
+                                    shopName={order.shopName || "Не указано"}
+                                    address={order.address || "Не указано"}
+                                    created={formatDate(order.created)}
+                                    totalPrice={`${order.totalPrice || 0} MDL`}
+                                    orderStatus={order.orderStatus || "NEW"}
+                                    comment={order.comment || "Нет комментария"}
+                                    totalItems={order.orderItems?.length || 0}
+                                    uniquePositions={order.orderItems?.length || 0}
+                                    isSmallScreen={isSmallScreen}
+                                />
+                            </View>
+                        ))}
                     </View>
                 )}
             </ScrollView>
@@ -292,156 +179,43 @@ export default function OrderPage() {
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#EFEFEF",
-    },
-    content: {
-        flexGrow: 1,
-        paddingTop: 16,
-    },
-    contentLarge: {
-        maxWidth: 1200,
-        alignSelf: 'center',
-        width: '100%',
-    },
-    header: {
-        fontSize: 22,
-        fontWeight: "600",
-        marginBottom: 20,
-        textAlign: "center",
-        color: "#333",
-    },
-    headerSmall: {
-        fontSize: 20,
-        marginBottom: 16,
-    },
-    headerLarge: {
-        fontSize: 26,
-        marginBottom: 24,
-    },
-    filterContainer: {
-        marginBottom: 16,
-        backgroundColor: "white",
+    container: { flex: 1, backgroundColor: "#EFEFEF" },
+    content: { flexGrow: 1, paddingTop: 16 },
+    contentLarge: { maxWidth: 1200, alignSelf: 'center', width: '100%' },
+    header: { fontSize: 22, fontWeight: "600", marginBottom: 20, textAlign: "center", color: "#333" },
+    headerSmall: { fontSize: 20, marginBottom: 16 },
+    headerLarge: { fontSize: 26, marginBottom: 24 },
+    addButton: {
+        backgroundColor: "#0C78D3",
+        paddingVertical: 16,
         borderRadius: 12,
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.05,
-        shadowRadius: 2,
-        elevation: 2,
-    },
-    filterScroll: {
-        marginBottom: 8,
-    },
-    filterScrollContent: {
-        paddingRight: 8,
-    },
-    filterButton: {
-        paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 20,
-        backgroundColor: "#F5F5F5",
-        marginRight: 8,
-        minWidth: 80,
         alignItems: "center",
-        justifyContent: 'center',
+        marginBottom: 16
     },
-    filterButtonSmall: {
-        paddingHorizontal: 12,
-        paddingVertical: 6,
-        minWidth: 70,
-        marginRight: 6,
-    },
-    filterButtonActive: {
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 3,
-        elevation: 3,
-    },
-    filterText: {
-        fontSize: 14,
-        color: "#666",
-        fontWeight: "500",
-        textAlign: 'center',
-    },
-    filterTextSmall: {
-        fontSize: 12,
-    },
-    filterTextActive: {
-        color: "white",
-        fontWeight: "600",
-    },
-    filterInfo: {
-        flexDirection: "row",
-        justifyContent: "space-between",
-        alignItems: "center",
-        paddingHorizontal: 4,
-    },
-    filterInfoSmall: {
-        flexDirection: "column",
-        alignItems: "flex-start",
-        gap: 4,
-    },
-    filterInfoText: {
-        fontSize: 13,
-        color: "#666",
-    },
-    filterInfoTextSmall: {
-        fontSize: 12,
-    },
-    clearFilter: {
-        paddingHorizontal: 10,
-        paddingVertical: 4,
-    },
-    clearFilterText: {
-        fontSize: 13,
-        color: "#F44336",
-        fontWeight: "500",
-    },
-    clearFilterTextSmall: {
-        fontSize: 12,
-    },
-    center: {
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: 200,
-        paddingVertical: 40,
-    },
-    emptyText: {
-        fontSize: 18,
-        color: "#666",
-        textAlign: "center",
-        marginTop: 20,
-        paddingHorizontal: 20,
-        fontWeight: '500',
-    },
-    emptyTextSmall: {
-        fontSize: 16,
-        paddingHorizontal: 16,
-    },
-    emptyTextLarge: {
-        fontSize: 20,
-    },
-    emptySubtext: {
-        fontSize: 14,
-        color: "#999",
-        textAlign: "center",
-        marginTop: 8,
-        paddingHorizontal: 20,
-    },
-    emptySubtextSmall: {
-        fontSize: 13,
-        paddingHorizontal: 16,
-    },
-    emptySubtextLarge: {
-        fontSize: 16,
-    },
-    ordersGrid: {
-        gap: 12,
-    },
-    orderWrapper: {
-        width: '100%',
-    },
+    addButtonText: { color: "black", fontSize: 18, fontWeight: "bold" },
+    filterContainer: { marginBottom: 16, backgroundColor: "white", borderRadius: 12, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 2 },
+    filterScroll: { marginBottom: 8 },
+    filterScrollContent: { paddingRight: 8 },
+    filterButton: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: "#F5F5F5", marginRight: 8, minWidth: 80, alignItems: "center", justifyContent: 'center' },
+    filterButtonSmall: { paddingHorizontal: 12, paddingVertical: 6, minWidth: 70, marginRight: 6 },
+    filterButtonActive: { shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 3 },
+    filterText: { fontSize: 14, color: "#666", fontWeight: "500", textAlign: 'center' },
+    filterTextSmall: { fontSize: 12 },
+    filterTextActive: { color: "white", fontWeight: "600" },
+    filterInfo: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 4 },
+    filterInfoSmall: { flexDirection: "column", alignItems: "flex-start", gap: 4 },
+    filterInfoText: { fontSize: 13, color: "#666" },
+    filterInfoTextSmall: { fontSize: 12 },
+    clearFilter: { paddingHorizontal: 10, paddingVertical: 4 },
+    clearFilterText: { fontSize: 13, color: "#F44336", fontWeight: "500" },
+    clearFilterTextSmall: { fontSize: 12 },
+    center: { flex: 1, justifyContent: "center", alignItems: "center", minHeight: 200, paddingVertical: 40 },
+    emptyText: { fontSize: 18, color: "#666", textAlign: "center", marginTop: 20, paddingHorizontal: 20, fontWeight: '500' },
+    emptyTextSmall: { fontSize: 16, paddingHorizontal: 16 },
+    emptyTextLarge: { fontSize: 20 },
+    emptySubtext: { fontSize: 14, color: "#999", textAlign: "center", marginTop: 8, paddingHorizontal: 20 },
+    emptySubtextSmall: { fontSize: 13, paddingHorizontal: 16 },
+    emptySubtextLarge: { fontSize: 16 },
+    ordersGrid: { gap: 12 },
+    orderWrapper: { width: '100%' },
 });

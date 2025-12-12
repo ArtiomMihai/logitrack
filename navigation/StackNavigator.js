@@ -11,6 +11,7 @@ import PersonalProfile from "../components/pages/PersonalProfile";
 import {CityPage} from "../components/pages/CityPage";
 import OrderDetails from "../components/orders/OrderDetails";
 import ProductsPage from "../components/pages/ProductsPage";
+import CreateOrder from "../components/pages/CreateOrder";
 
 const Stack = createNativeStackNavigator();
 
@@ -31,6 +32,7 @@ export default function StackNavigator() {
                     component={OrderDetails}
                     options={{ title: 'Детали заказа' }}
                 />
+                <Stack.Screen name="Orderses" component={CreateOrder}/>
             </Stack.Navigator>
         </NavigationContainer>
     );
