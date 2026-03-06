@@ -47,8 +47,8 @@ export default function MenuList() {
             <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Products")}>
 
                 <View style={styles.menuItem}>
-                    <Feather style={styles.icon} name="settings" size={24} color="black" />
-                    <Text style={styles.text}>Профиль</Text>
+                    <Feather style={styles.icon} name="" size={24} color="black" />
+                    <Text style={styles.text}>Продукты</Text>
                 </View>
 
             </TouchableOpacity>

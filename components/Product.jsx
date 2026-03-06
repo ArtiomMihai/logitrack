@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     price: {
         fontSize: 18,
         fontWeight: 'bold',
-        color: '#2e7d32',
+        color: '#0c7eda',
     },
     unit: {
         fontSize: 14,

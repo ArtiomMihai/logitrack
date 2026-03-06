@@ -2,7 +2,7 @@ import Header from "../Header";
 import {Button, StyleSheet, Text, View} from "react-native";
 import Menu from "../menu/Menu";
 import {useState} from "react";
-import CreateOrder from "./CreateOrder";
+
 
 
 export default function MainPage({navigation}) {

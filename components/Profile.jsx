@@ -7,7 +7,7 @@ export default function Profile({ toggleMenu }) {
         <View style={styles.mainBlock}>
             <View style={styles.profileBlock}>
                 <FontAwesome name="user-o" size={36} color="black" />
-                <Text style={styles.name}>Никита Яцко</Text>
+                <Text style={styles.name}>Артём Михай</Text>
             </View>
             <TouchableOpacity onPress={toggleMenu}>
                 <Ionicons name="close-outline" size={36} color="black" style={styles.icon} />
