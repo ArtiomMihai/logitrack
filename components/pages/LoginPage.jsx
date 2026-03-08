@@ -88,7 +88,7 @@ export default function LoginPage() {
             {errors.password && <Text style={styles.error}>{errors.password}</Text>}
 
             <TouchableOpacity onPress={() => navigation.navigate("Registration")}>
-                <Text style={{marginTop: 10, color: "#0c7eda"}}>Нет аккаунта? Зарегистрироваться</Text>
+                <Text style={{marginTop: 10, color: "#007AFF"}}>Нет аккаунта? Зарегистрироваться</Text>
             </TouchableOpacity>
 
             <Button

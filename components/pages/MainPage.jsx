@@ -212,6 +212,7 @@ const styles = StyleSheet.create({
         color: "#333",
     },
     navigationButtons: {
+
         paddingHorizontal: 20,
         marginTop: 'auto',
         marginBottom: 20,

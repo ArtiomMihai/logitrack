@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: 0,
         right: 0,
-        backgroundColor: "#4A90E2",
+        backgroundColor: "#007AFF",
         width: 32,
         height: 32,
         borderRadius: 16,
@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
         width: "90%",
         height: 50,            // добавили высоту
         borderRadius: 10,      // можно даже height/2 для полностью круглых концов
-        backgroundColor: "#178bf6", // чтобы было видно
+        backgroundColor: "#007AFF", // чтобы было видно
         justifyContent: "center",
         alignItems: "center",
     }

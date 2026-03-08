@@ -170,7 +170,7 @@ export default function ProductsPage() {
 
         return (
             <View style={styles.footerLoader}>
-                <ActivityIndicator size="small" color="#0c7eda" />
+                <ActivityIndicator size="small" color="#007AFF" />
                 <Text style={styles.footerText}>Загрузка...</Text>
             </View>
         );
@@ -180,7 +180,7 @@ export default function ProductsPage() {
     if (loading && pagination.page === 1) {
         return (
             <View style={styles.centered}>
-                <ActivityIndicator size="large" color="#0c7eda" />
+                <ActivityIndicator size="large" color="#007AFF" />
                 <Text style={styles.loadingText}>Загрузка продуктов...</Text>
             </View>
         );
@@ -263,8 +263,8 @@ export default function ProductsPage() {
                     <RefreshControl
                         refreshing={refreshing}
                         onRefresh={onRefresh}
-                        colors={['#0c7eda']}
-                        tintColor="#0c7eda"
+                        colors={['#007AFF']}
+                        tintColor="#007AFF"
                         title="Обновление..."
                         titleColor="#666"
                     />
@@ -313,7 +313,7 @@ export default function ProductsPage() {
             {/* Индикатор загрузки внизу */}
             {loadingMore && (
                 <View style={styles.bottomLoader}>
-                    <ActivityIndicator size="small" color="#0c7eda" />
+                    <ActivityIndicator size="small" color="#007AFF" />
                     <Text style={styles.bottomLoaderText}>Загрузка...</Text>
                 </View>
             )}
@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
     count: {
         fontSize: 14,
         fontWeight: '600',
-        color: '#0c7eda',
+        color: '#007AFF',
         marginBottom: 4,
     },
     pageInfo: {
@@ -459,12 +459,12 @@ const styles = StyleSheet.create({
         lineHeight: 22,
     },
     retryButton: {
-        backgroundColor: '#0c7eda',
+        backgroundColor: '#007AFF',
         paddingHorizontal: 32,
         paddingVertical: 14,
         borderRadius: 10,
         elevation: 2,
-        shadowColor: '#0c7eda',
+        shadowColor: '#007AFF',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
@@ -504,14 +504,14 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     loadAllButton: {
-        backgroundColor: '#0c7eda',
+        backgroundColor: '#007AFF',
         marginHorizontal: 20,
         marginBottom: 10,
         paddingVertical: 14,
         borderRadius: 10,
         alignItems: 'center',
         elevation: 3,
-        shadowColor: '#0c7eda',
+        shadowColor: '#007AFF',
         shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.2,
         shadowRadius: 3,
