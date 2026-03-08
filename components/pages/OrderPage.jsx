@@ -1,10 +1,10 @@
-import { Text, StyleSheet, ScrollView, View, RefreshControl, TouchableOpacity, Dimensions, Platform } from "react-native";
+import {Text, StyleSheet, ScrollView, View, RefreshControl, TouchableOpacity, Dimensions, Platform} from "react-native";
 import NewOrder from "../orders/NewOrder";
-import { useEffect, useState } from "react";
-import { ENDPOINTS } from "../../api";
+import {useEffect, useState} from "react";
+import {ENDPOINTS} from "../../api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { ActivityIndicator, MD2Colors } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import {ActivityIndicator, MD2Colors} from "react-native-paper";
+import {useNavigation} from "@react-navigation/native";
 
 export default function OrderPage() {
     const [orders, setOrders] = useState([]);
@@ -33,7 +33,7 @@ export default function OrderPage() {
             const token = await AsyncStorage.getItem("token");
             const response = await fetch(ENDPOINTS.GET_ORDERS, {
                 method: "GET",
-                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` }
+                headers: {"Content-Type": "application/json", "Authorization": `Bearer ${token}`}
             });
 
             if (!response.ok) {
@@ -66,7 +66,7 @@ export default function OrderPage() {
         if (!dateString) return "Нет даты";
         try {
             const date = new Date(dateString);
-            return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+            return date.toLocaleDateString('ru-RU', {day: '2-digit', month: '2-digit', year: 'numeric'});
         } catch (e) {
             return dateString.substring(0, 10);
         }
@@ -74,32 +74,48 @@ export default function OrderPage() {
 
     const getStatusDisplayName = (status) => {
         switch (status.toUpperCase()) {
-            case "ALL": return "Все";
-            case "NEW": return "Новые";
-            case "PROCESSING": return isSmallScreen ? "В работе" : "В обработке";
-            case "COMPLETED": return isSmallScreen ? "Готово" : "Завершено";
-            case "CANCELLED": return isSmallScreen ? "Отмена" : "Отменено";
-            default: return status;
+            case "ALL":
+                return "Все";
+            case "NEW":
+                return "Новые";
+            case "PROCESSING":
+                return isSmallScreen ? "В работе" : "В обработке";
+            case "COMPLETED":
+                return isSmallScreen ? "Готово" : "Завершено";
+            case "CANCELLED":
+                return isSmallScreen ? "Отмена" : "Отменено";
+            default:
+                return status;
         }
     };
 
     const getStatusColor = (status) => {
         switch (status.toUpperCase()) {
-            case "NEW": return "#2196F3";
-            case "PROCESSING": return "#FF9800";
-            case "COMPLETED": return "#4CAF50";
-            case "CANCELLED": return "#F44336";
-            default: return "#9E9E9E";
+            case "NEW":
+                return "#2196F3";
+            case "PROCESSING":
+                return "#FF9800";
+            case "COMPLETED":
+                return "#4CAF50";
+            case "CANCELLED":
+                return "#F44336";
+            default:
+                return "#9E9E9E";
         }
     };
 
     return (
         <View style={styles.container}>
             <ScrollView
-                contentContainerStyle={[styles.content, { paddingHorizontal: 16, gap: 12, paddingBottom: Platform.OS === 'ios' ? 30 : 20 }, isLargeScreen && styles.contentLarge]}
-                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0C78D3"]} />}
+                contentContainerStyle={[styles.content, {
+                    paddingHorizontal: 16,
+                    gap: 12,
+                    paddingBottom: Platform.OS === 'ios' ? 30 : 20
+                }, isLargeScreen && styles.contentLarge]}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#0C78D3"]}/>}
             >
-                <Text style={[styles.header, isSmallScreen && styles.headerSmall, isLargeScreen && styles.headerLarge]}>Заказы</Text>
+                <Text
+                    style={[styles.header, isSmallScreen && styles.headerSmall, isLargeScreen && styles.headerLarge]}>Заказы</Text>
 
                 {/* Кнопка "+" для создания заказа */}
                 <TouchableOpacity
@@ -109,15 +125,17 @@ export default function OrderPage() {
                     <Text style={styles.addButtonText}>+ Создать заказ</Text>
                 </TouchableOpacity>
 
-                <View style={[styles.filterContainer, { padding: isSmallScreen ? 10 : 12 }]}>
-                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll} contentContainerStyle={styles.filterScrollContent}>
+                <View style={[styles.filterContainer, {padding: isSmallScreen ? 10 : 12}]}>
+                    <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterScroll}
+                                contentContainerStyle={styles.filterScrollContent}>
                         {statuses.map(status => (
                             <TouchableOpacity
                                 key={status}
-                                style={[styles.filterButton, isSmallScreen && styles.filterButtonSmall, selectedStatus === status && styles.filterButtonActive, selectedStatus === status && { backgroundColor: getStatusColor(status) }]}
+                                style={[styles.filterButton, isSmallScreen && styles.filterButtonSmall, selectedStatus === status && styles.filterButtonActive, selectedStatus === status && {backgroundColor: getStatusColor(status)}]}
                                 onPress={() => setSelectedStatus(status)}
                             >
-                                <Text style={[styles.filterText, isSmallScreen && styles.filterTextSmall, selectedStatus === status && styles.filterTextActive]}>
+                                <Text
+                                    style={[styles.filterText, isSmallScreen && styles.filterTextSmall, selectedStatus === status && styles.filterTextActive]}>
                                     {getStatusDisplayName(status)}
                                 </Text>
                             </TouchableOpacity>
@@ -140,14 +158,17 @@ export default function OrderPage() {
 
                 {loading ? (
                     <View style={styles.center}>
-                        <ActivityIndicator animating={true} color={MD2Colors.red800} size={isLargeScreen ? "large" : "small"} />
+                        <ActivityIndicator animating={true} color={MD2Colors.red800}
+                                           size={isLargeScreen ? "large" : "small"}/>
                     </View>
                 ) : filteredOrders.length === 0 ? (
                     <View style={styles.center}>
-                        <Text style={[styles.emptyText, isSmallScreen && styles.emptyTextSmall, isLargeScreen && styles.emptyTextLarge]}>
+                        <Text
+                            style={[styles.emptyText, isSmallScreen && styles.emptyTextSmall, isLargeScreen && styles.emptyTextLarge]}>
                             {selectedStatus === "ALL" ? "Нет заказов" : `Нет заказов со статусом "${getStatusDisplayName(selectedStatus)}"`}
                         </Text>
-                        <Text style={[styles.emptySubtext, isSmallScreen && styles.emptySubtextSmall, isLargeScreen && styles.emptySubtextLarge]}>
+                        <Text
+                            style={[styles.emptySubtext, isSmallScreen && styles.emptySubtextSmall, isLargeScreen && styles.emptySubtextLarge]}>
                             {selectedStatus === "ALL" ? "Создайте первый заказ" : "Попробуйте изменить фильтр"}
                         </Text>
                     </View>
@@ -179,12 +200,12 @@ export default function OrderPage() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: "#EFEFEF" },
-    content: { flexGrow: 1, paddingTop: 16 },
-    contentLarge: { maxWidth: 1200, alignSelf: 'center', width: '100%' },
-    header: { fontSize: 22, fontWeight: "600", marginBottom: 20, textAlign: "center", color: "#333" },
-    headerSmall: { fontSize: 20, marginBottom: 16 },
-    headerLarge: { fontSize: 26, marginBottom: 24 },
+    container: {flex: 1, backgroundColor: "#EFEFEF"},
+    content: {flexGrow: 1, paddingTop: 16},
+    contentLarge: {maxWidth: 1200, alignSelf: 'center', width: '100%'},
+    header: {fontSize: 22, fontWeight: "600", marginBottom: 20, textAlign: "center", color: "#333"},
+    headerSmall: {fontSize: 20, marginBottom: 16},
+    headerLarge: {fontSize: 26, marginBottom: 24},
     addButton: {
         backgroundColor: "#0C78D3",
         paddingVertical: 16,
@@ -192,30 +213,61 @@ const styles = StyleSheet.create({
         alignItems: "center",
         marginBottom: 16
     },
-    addButtonText: { color: "black", fontSize: 18, fontWeight: "bold" },
-    filterContainer: { marginBottom: 16, backgroundColor: "white", borderRadius: 12, shadowColor: "#000", shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 2 },
-    filterScroll: { marginBottom: 8 },
-    filterScrollContent: { paddingRight: 8 },
-    filterButton: { paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20, backgroundColor: "#F5F5F5", marginRight: 8, minWidth: 80, alignItems: "center", justifyContent: 'center' },
-    filterButtonSmall: { paddingHorizontal: 12, paddingVertical: 6, minWidth: 70, marginRight: 6 },
-    filterButtonActive: { shadowColor: "#000", shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 3, elevation: 3 },
-    filterText: { fontSize: 14, color: "#666", fontWeight: "500", textAlign: 'center' },
-    filterTextSmall: { fontSize: 12 },
-    filterTextActive: { color: "white", fontWeight: "600" },
-    filterInfo: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 4 },
-    filterInfoSmall: { flexDirection: "column", alignItems: "flex-start", gap: 4 },
-    filterInfoText: { fontSize: 13, color: "#666" },
-    filterInfoTextSmall: { fontSize: 12 },
-    clearFilter: { paddingHorizontal: 10, paddingVertical: 4 },
-    clearFilterText: { fontSize: 13, color: "#F44336", fontWeight: "500" },
-    clearFilterTextSmall: { fontSize: 12 },
-    center: { flex: 1, justifyContent: "center", alignItems: "center", minHeight: 200, paddingVertical: 40 },
-    emptyText: { fontSize: 18, color: "#666", textAlign: "center", marginTop: 20, paddingHorizontal: 20, fontWeight: '500' },
-    emptyTextSmall: { fontSize: 16, paddingHorizontal: 16 },
-    emptyTextLarge: { fontSize: 20 },
-    emptySubtext: { fontSize: 14, color: "#999", textAlign: "center", marginTop: 8, paddingHorizontal: 20 },
-    emptySubtextSmall: { fontSize: 13, paddingHorizontal: 16 },
-    emptySubtextLarge: { fontSize: 16 },
-    ordersGrid: { gap: 12 },
-    orderWrapper: { width: '100%' },
+    addButtonText: {color: "black", fontSize: 18, fontWeight: "bold"},
+    filterContainer: {
+        marginBottom: 16,
+        backgroundColor: "white",
+        borderRadius: 12,
+        shadowColor: "#000",
+        shadowOffset: {width: 0, height: 1},
+        shadowOpacity: 0.05,
+        shadowRadius: 2,
+        elevation: 2
+    },
+    filterScroll: {marginBottom: 8},
+    filterScrollContent: {paddingRight: 8},
+    filterButton: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 20,
+        backgroundColor: "#F5F5F5",
+        marginRight: 8,
+        minWidth: 80,
+        alignItems: "center",
+        justifyContent: 'center'
+    },
+    filterButtonSmall: {paddingHorizontal: 12, paddingVertical: 6, minWidth: 70, marginRight: 6},
+    filterButtonActive: {
+        shadowColor: "#000",
+        shadowOffset: {width: 0, height: 2},
+        shadowOpacity: 0.1,
+        shadowRadius: 3,
+        elevation: 3
+    },
+    filterText: {fontSize: 14, color: "#666", fontWeight: "500", textAlign: 'center'},
+    filterTextSmall: {fontSize: 12},
+    filterTextActive: {color: "white", fontWeight: "600"},
+    filterInfo: {flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingHorizontal: 4},
+    filterInfoSmall: {flexDirection: "column", alignItems: "flex-start", gap: 4},
+    filterInfoText: {fontSize: 13, color: "#666"},
+    filterInfoTextSmall: {fontSize: 12},
+    clearFilter: {paddingHorizontal: 10, paddingVertical: 4},
+    clearFilterText: {fontSize: 13, color: "#F44336", fontWeight: "500"},
+    clearFilterTextSmall: {fontSize: 12},
+    center: {flex: 1, justifyContent: "center", alignItems: "center", minHeight: 200, paddingVertical: 40},
+    emptyText: {
+        fontSize: 18,
+        color: "#666",
+        textAlign: "center",
+        marginTop: 20,
+        paddingHorizontal: 20,
+        fontWeight: '500'
+    },
+    emptyTextSmall: {fontSize: 16, paddingHorizontal: 16},
+    emptyTextLarge: {fontSize: 20},
+    emptySubtext: {fontSize: 14, color: "#999", textAlign: "center", marginTop: 8, paddingHorizontal: 20},
+    emptySubtextSmall: {fontSize: 13, paddingHorizontal: 16},
+    emptySubtextLarge: {fontSize: 16},
+    ordersGrid: {gap: 12},
+    orderWrapper: {width: '100%'},
 });

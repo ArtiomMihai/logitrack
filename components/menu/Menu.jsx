@@ -1,4 +1,4 @@
-import {StyleSheet, Animated, Dimensions} from "react-native";
+import { StyleSheet, Animated, Dimensions, TouchableOpacity, Text, View } from "react-native";
 import Profile from "./Profile";
 import { useRef, useEffect } from "react";
 import MenuList from "./MenuList";
@@ -6,7 +6,6 @@ import MenuList from "./MenuList";
 export default function Menu({ isOpen, toggleMenu }) {
     const screenWidth = Dimensions.get("window").width;
     const menuWidth = screenWidth * 0.8;
-
     const leftAnim = useRef(new Animated.Value(-menuWidth)).current;
 
     useEffect(() => {
@@ -21,8 +20,21 @@ export default function Menu({ isOpen, toggleMenu }) {
         <>
             <Animated.View style={[styles.main, { width: menuWidth, left: leftAnim }]}>
                 <Profile toggleMenu={toggleMenu} />
-                <MenuList />
+
+                <View style={styles.menuTriggerContainer}>
+                    <TouchableOpacity
+                        style={styles.menuTrigger}
+                        onPress={toggleMenu}
+                    >
+                        <Text style={styles.menuTriggerText}>Открыть дополнительное меню</Text>
+                    </TouchableOpacity>
+                </View>
             </Animated.View>
+
+            <MenuList
+                visible={isOpen}
+                onClose={toggleMenu}
+            />
         </>
     );
 }
@@ -42,5 +54,20 @@ const styles = StyleSheet.create({
         borderRightColor: "rgba(0,0,0,0.1)",
         paddingHorizontal: 16,
         zIndex: 1000,
+    },
+    menuTriggerContainer: {
+        marginTop: 20,
+        paddingHorizontal: 10,
+    },
+    menuTrigger: {
+        backgroundColor: "#D6E4FF",
+        padding: 15,
+        borderRadius: 20,
+        alignItems: "center",
+    },
+    menuTriggerText: {
+        fontSize: 14,
+        color: "#424242",
+        fontWeight: "500",
     },
 });

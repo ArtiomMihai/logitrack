@@ -1,86 +1,221 @@
-import {Text, TouchableOpacity, View} from "react-native";
-import {StyleSheet} from "react-native";
+import { Text, TouchableOpacity, View, TouchableWithoutFeedback, Animated } from "react-native";
+import { StyleSheet } from "react-native";
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
-import {useNavigation} from "@react-navigation/native";
+import { useNavigation } from "@react-navigation/native";
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
+import { useRef, useEffect } from "react";
 
-export default function MenuList() {
-    const navigation = useNavigation()
+export default function MenuList({ visible, onClose }) {
+    const navigation = useNavigation();
+    const translateX = useRef(new Animated.Value(-300)).current;
+    const opacity = useRef(new Animated.Value(0)).current;
+
+    useEffect(() => {
+        if (visible) {
+            // Анимация появления
+            Animated.parallel([
+                Animated.timing(translateX, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(opacity, {
+                    toValue: 1,
+                    duration: 300,
+                    useNativeDriver: true,
+                })
+            ]).start();
+        } else {
+            // Анимация скрытия
+            Animated.parallel([
+                Animated.timing(translateX, {
+                    toValue: -300,
+                    duration: 300,
+                    useNativeDriver: true,
+                }),
+                Animated.timing(opacity, {
+                    toValue: 0,
+                    duration: 300,
+                    useNativeDriver: true,
+                })
+            ]).start();
+        }
+    }, [visible]);
+
+    const handleNavigation = (screen) => {
+        navigation.navigate(screen);
+        onClose();
+    };
+
     return (
-        <View style={styles.container}>
+        <View style={styles.overlay}>
+            <TouchableWithoutFeedback onPress={onClose}>
+                <Animated.View
+                    style={[
+                        styles.backdrop,
+                        {
+                            opacity: opacity,
+                            display: visible ? 'flex' : 'none'
+                        }
+                    ]}
+                />
+            </TouchableWithoutFeedback>
 
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate('Order')}>
-
-                <View style={styles.menuItem}>
-
-                    <SimpleLineIcons name="notebook" size={28} color="#333" style={styles.icon}/>
-                    <Text style={styles.text}>Список заявок</Text>
-
-                </View>
-                
-            </TouchableOpacity>
-
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Shops")}>
-                <View style={styles.menuItem}>
-
-                    <AntDesign name="shop" size={28} color="#333" style={styles.icon}/>
-                    <Text style={styles.text}>Магазины</Text>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("City")}>
-                <View style={styles.menuItem}>
-
-                    <FontAwesome5 name="city" size={24} color="black" style={styles.icon}/>
-                    <Text style={styles.text}>Города</Text>
-                </View>
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Me")}>
-
-                    <View style={styles.menuItem}>
-                        <Feather style={styles.icon} name="settings" size={24} color="black" />
-                        <Text style={styles.text}>Профиль</Text>
-                    </View>
-
-            </TouchableOpacity>
-            <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.navigate("Products")}>
-
-                <View style={styles.menuItem}>
-                    <Feather style={styles.icon} name="" size={24} color="black" />
-                    <Text style={styles.text}>Продукты</Text>
+            <Animated.View
+                style={[
+                    styles.sidebar,
+                    {
+                        transform: [{ translateX: translateX }],
+                        opacity: opacity,
+                    }
+                ]}
+            >
+                <View style={styles.header}>
+                    <Text style={styles.headerTitle}>Меню</Text>
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={onClose}
+                        style={styles.closeButton}
+                    >
+                        <Feather name="x" size={24} color="#666" />
+                    </TouchableOpacity>
                 </View>
 
-            </TouchableOpacity>
+                <View style={styles.container}>
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleNavigation('Order')}
+                    >
+                        <View style={styles.menuItem}>
+                            <SimpleLineIcons name="notebook" size={28} color="#333" style={styles.icon}/>
+                            <Text style={styles.text}>Список заявок</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleNavigation("Shops")}
+                    >
+                        <View style={styles.menuItem}>
+                            <AntDesign name="shop" size={28} color="#333" style={styles.icon}/>
+                            <Text style={styles.text}>Магазины</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleNavigation("City")}
+                    >
+                        <View style={styles.menuItem}>
+                            <FontAwesome5 name="city" size={24} color="black" style={styles.icon}/>
+                            <Text style={styles.text}>Города</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleNavigation("Me")}
+                    >
+                        <View style={styles.menuItem}>
+                            <Feather style={styles.icon} name="settings" size={24} color="black" />
+                            <Text style={styles.text}>Профиль</Text>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleNavigation("Products")}
+                    >
+                        <View style={styles.menuItem}>
+                            <Feather style={styles.icon} name="package" size={24} color="black" />
+                            <Text style={styles.text}>Продукты</Text>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </Animated.View>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
+    overlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 2000,
+        pointerEvents: 'box-none', // Позволяет нажимать через overlay когда меню закрыто
+    },
+    backdrop: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    },
+    sidebar: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: '80%',
+        maxWidth: 300,
+        backgroundColor: 'white',
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2,
+            height: 0,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 50,
+        paddingBottom: 20,
+        backgroundColor: '#f8f9fa',
+        borderBottomWidth: 1,
+        borderBottomColor: '#e0e0e0',
+    },
+    headerTitle: {
+        fontSize: 18,
+        fontWeight: '600',
+        color: '#333',
+    },
+    closeButton: {
+        padding: 5,
+    },
     container: {
         flexDirection: 'column',
-        gap: 15,
-
-        paddingVertical: 15,
+        gap: 20,
+        padding: 20,
         width: "100%",
     },
     menuItem: {
         flexDirection: "row",
         alignItems: "center",
-        padding: 10,
-        borderRadius: 12,
+        padding: 15,
+        borderRadius: 20,
         backgroundColor: "#D6E4FF",
         shadowColor: "#000",
-        shadowOffset: {width: 0, height: 2},
+        shadowOffset: { width: 0, height: 2 },
         shadowOpacity: 0.15,
         shadowRadius: 4,
         elevation: 3,
     },
     icon: {
-        marginRight: 15,
+        marginRight: 20,
     },
     text: {
-        fontSize: 12,
+        fontSize: 14,
         color: "#424242",
         fontWeight: "500",
     },
