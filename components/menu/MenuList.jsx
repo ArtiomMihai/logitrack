@@ -93,6 +93,15 @@ export default function MenuList({ visible, onClose }) {
                             <Text style={styles.text}>Список заявок</Text>
                         </View>
                     </TouchableOpacity>
+                    <TouchableOpacity
+                        activeOpacity={0.7}
+                        onPress={() => handleNavigation('Users')}
+                    >
+                        <View style={styles.menuItem}>
+                            <SimpleLineIcons name="notebook" size={28} color="#333" style={styles.icon}/>
+                            <Text style={styles.text}>Список сотрудников</Text>
+                        </View>
+                    </TouchableOpacity>
 
                     <TouchableOpacity
                         activeOpacity={0.7}

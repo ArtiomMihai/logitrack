@@ -8,6 +8,7 @@ export const ENDPOINTS = {
     GET_ORDERS: `${API_BASE_URL}/api/orders/all`,
     GET_ORDER_BY_ID: `${API_BASE_URL}/api/orders/`,
     GET_SHOPS: `${API_BASE_URL}/api/shops`,
+    GET_USERS: `${API_BASE_URL}/api/users`,
     GET_PRODUCTS: `${API_BASE_URL}/api/products`,
     GET_SETTLEMENTS: `${API_BASE_URL}/api/settlements`,
 };
