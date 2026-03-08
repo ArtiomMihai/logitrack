@@ -12,6 +12,7 @@ import {CityPage} from "../components/pages/CityPage";
 import OrderDetails from "../components/orders/OrderDetails";
 import ProductsPage from "../components/pages/ProductsPage";
 import CreateOrder from "../components/pages/CreateOrder";
+import UsersPage from "../components/pages/UsersPage";
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +28,7 @@ export default function StackNavigator() {
                 <Stack.Screen name="Me" component={PersonalProfile}/>
                 <Stack.Screen name="City" component={CityPage}/>
                 <Stack.Screen name="Products" component={ProductsPage}/>
+                <Stack.Screen name="Users" component={UsersPage}/>
                 <Stack.Screen
                     name="OrderDetails"
                     component={OrderDetails}
