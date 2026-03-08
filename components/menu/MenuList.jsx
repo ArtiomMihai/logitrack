@@ -1,19 +1,26 @@
-import { Text, TouchableOpacity, View, TouchableWithoutFeedback, Animated } from "react-native";
+import { Text, TouchableOpacity, View, TouchableWithoutFeedback, Animated, Image } from "react-native";
 import { StyleSheet } from "react-native";
 import SimpleLineIcons from '@expo/vector-icons/SimpleLineIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import { useNavigation } from "@react-navigation/native";
 import Feather from '@expo/vector-icons/Feather';
 import FontAwesome5 from '@expo/vector-icons/FontAwesome5';
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { ENDPOINTS } from "../../api";
+
 
 export default function MenuList({ visible, onClose }) {
     const navigation = useNavigation();
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+
     const translateX = useRef(new Animated.Value(-300)).current;
     const opacity = useRef(new Animated.Value(0)).current;
 
     useEffect(() => {
         if (visible) {
+            loadUserProfile();
             // Анимация появления
             Animated.parallel([
                 Animated.timing(translateX, {
@@ -44,9 +51,34 @@ export default function MenuList({ visible, onClose }) {
         }
     }, [visible]);
 
+    const loadUserProfile = async () => {
+        try {
+            const token = await AsyncStorage.getItem("token");
+            if (!token) {
+                navigation.navigate("Login");
+                return;
+            }
+
+            const res = await fetch(ENDPOINTS.PROFILE, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            const data = await res.json();
+            setUser(data);
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     const handleNavigation = (screen) => {
         navigation.navigate(screen);
         onClose();
+    };
+
+    const handleProfilePress = () => {
+        handleNavigation('Me');
     };
 
     return (
@@ -72,17 +104,35 @@ export default function MenuList({ visible, onClose }) {
                     }
                 ]}
             >
-                <View style={styles.header}>
-                    <Text style={styles.headerTitle}>Меню</Text>
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={onClose}
-                        style={styles.closeButton}
-                    >
-                        <Feather name="x" size={24} color="#666" />
-                    </TouchableOpacity>
-                </View>
+                {/* Шапка с фотографией профиля и данными пользователя */}
+                <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={handleProfilePress}
+                    style={styles.profileHeader}
+                >
+                    <View style={styles.profileInfo}>
+                        <Image
+                            source={{
+                                uri: user?.imageUrl || 'https://via.placeholder.com/60'
+                            }}
+                            style={styles.profileImage}
+                        />
+                        <View style={styles.profileTextContainer}>
+                            <Text style={styles.profileName}>
+                                {user?.fullName || 'Загрузка...'}
+                            </Text>
+                            <Text style={styles.profileRole} numberOfLines={1}>
+                                {user?.roleList?.map(r => r.name).join(", ") || 'Нет ролей'}
+                            </Text>
+                        </View>
+                    </View>
+                    <Feather name="chevron-right" size={20} color="#666" />
+                </TouchableOpacity>
 
+                {/* Разделитель */}
+                <View style={styles.divider} />
+
+                {/* Основное меню */}
                 <View style={styles.container}>
                     <TouchableOpacity
                         activeOpacity={0.7}
@@ -114,15 +164,7 @@ export default function MenuList({ visible, onClose }) {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity
-                        activeOpacity={0.7}
-                        onPress={() => handleNavigation("Me")}
-                    >
-                        <View style={styles.menuItem}>
-                            <Feather style={styles.icon} name="settings" size={24} color="black" />
-                            <Text style={styles.text}>Профиль</Text>
-                        </View>
-                    </TouchableOpacity>
+
 
                     <TouchableOpacity
                         activeOpacity={0.7}
@@ -133,6 +175,7 @@ export default function MenuList({ visible, onClose }) {
                             <Text style={styles.text}>Продукты</Text>
                         </View>
                     </TouchableOpacity>
+
                 </View>
             </Animated.View>
         </View>
@@ -147,7 +190,7 @@ const styles = StyleSheet.create({
         right: 0,
         bottom: 0,
         zIndex: 2000,
-        pointerEvents: 'box-none', // Позволяет нажимать через overlay когда меню закрыто
+        pointerEvents: 'box-none',
     },
     backdrop: {
         position: 'absolute',
@@ -174,24 +217,46 @@ const styles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
     },
-    header: {
+    profileHeader: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
         alignItems: 'center',
+        justifyContent: 'space-between',
         paddingHorizontal: 20,
-        paddingTop: 50,
+        paddingTop: 20,
         paddingBottom: 20,
         backgroundColor: '#f8f9fa',
         borderBottomWidth: 1,
         borderBottomColor: '#e0e0e0',
     },
-    headerTitle: {
-        fontSize: 18,
+    profileInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        flex: 1,
+    },
+    profileImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginRight: 12,
+        backgroundColor: '#e0e0e0',
+    },
+    profileTextContainer: {
+        flex: 1,
+    },
+    profileName: {
+        fontSize: 16,
         fontWeight: '600',
         color: '#333',
+        marginBottom: 4,
     },
-    closeButton: {
-        padding: 5,
+    profileRole: {
+        fontSize: 12,
+        color: '#666',
+    },
+    divider: {
+        height: 1,
+        backgroundColor: '#e0e0e0',
+        width: '100%',
     },
     container: {
         flexDirection: 'column',
@@ -202,14 +267,7 @@ const styles = StyleSheet.create({
     menuItem: {
         flexDirection: "row",
         alignItems: "center",
-        padding: 15,
-        borderRadius: 20,
-        backgroundColor: "#D6E4FF",
-        shadowColor: "#000",
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
-        shadowRadius: 4,
-        elevation: 3,
+        backgroundColor: "#ffffff",
     },
     icon: {
         marginRight: 20,
